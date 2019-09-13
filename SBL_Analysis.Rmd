@@ -1,0 +1,137 @@
+---
+title: "SBL_analysis"
+author: "Steven Lawrence"
+date: "September 13, 2019"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true 
+---
+
+#Data Retrival and Manipulation
+
+Here I am installing all libraries neccessary for analysis
+
+```{r Libraries Install, echo=TRUE, eval=FALSE, message=FALSE}
+install.packages(c("tidyverse","ggplot2","tseries","DataCombine","forecast","dplyr","knitr","pastecs","grid","formattable","gridExtra","viridis","viewpoint"))
+
+```
+Loading Libraries
+
+```{r Libraries, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(tseries)
+library(DataCombine)
+library(forecast)
+library(dplyr)
+library(knitr)
+library(pastecs)
+library(grid)
+library(formattable)
+library(gridExtra)
+library(viridis)
+library(magrittr)
+library(qwraps2)
+
+```
+
+
+##Geographic Analysis 
+
+
+##Temporal Trend
+Both temporal datasets were retrieve from trends.google.com via csv files and are depicted below showing the head and tail of each. 
+
+```{r Skin Bleaching Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
+skBT<- read.csv("C:/Users/brian/Documents/Biostatistis Mount Sinai/SBL-Global/drive-download-20190913T154116Z-001/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
+skBT<- skBT[-1,]
+skBT$RSV<- as.numeric(skBT$RSV)
+```
+
+Head and Tail of Skin Bleaching temporal trend dataset
+```{r SKBT head and tail ,message=FALSE, warning=FALSE, echo=FALSE}
+head(skBT)
+tail(skBT)
+```
+
+```{r Skin Lightening Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
+skLT<- read.csv("C:/Users/brian/Documents/Biostatistis Mount Sinai/SBL-Global/drive-download-20190913T154116Z-001/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",", stringsAsFactors = F, col.names = c("Time","RSV"))
+skLT<- skLT[-1,]
+skLT$RSV<- as.numeric(skLT$RSV)
+```
+Head and tail of skin lightening temporal trend dataset
+```{r SKLt head and tail ,message=FALSE, warning=FALSE, echo=FALSE}
+
+head(skLT)
+tail(skLT)
+```
+Here I merged the two temporal datasets to create a new variable that is the average of the two.  The head and tail is shown below.
+
+```{r Merged Temporal Trend Data, message=FALSE, warning=FALSE}
+
+## merging bleaching and lightening data temporal data sets relative search volumes by time##
+
+SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+
+colnames(SKBLT)<- c("Date","Bleaching", "Lightening")
+
+#creating an average variable of bleaching and lightening temporal RSV's
+
+SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
+#creating a subset of SKBLT only time and average RSV 
+SKBLT.p<- SKBLT[,c(1,4)]
+head(SKBLT.p)
+tail(SKBLT.p)
+```
+
+Using the tseries and forecast package we analyazed the temporal trend. 
+
+```{r time series object, message=FALSE, warning=FALSE}
+#creating a time series object in order to plot the temporal trend as a time series element
+SKBLT.ts<- ts(SKBLT.p$aveRSV)
+
+```
+
+This plot is SBL queries by month in the United States from 2004 - 2019. 
+```{r temporal trend plot, message=FALSE, warning=FALSE}
+#plotting sbl quries over time with a resolution of months 
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months", ylab = "Relative Search Volume")
+```
+Here I provide some discriptive statistics of the overall temporal trend. 
+
+Then data is not normally distributed there for I recorded the median and IQR `median_iqr(SKBLT.p$aveRSV)`
+```{r Discriptibe Statisics}
+hist(SKBLT.p$aveRSV, n = 40)
+mean_skbl<-mean(SKBLT.p$aveRSV)
+mean_skbl
+
+
+```
+SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRSV", slideBy = -1)
+SKBLT.pc
+summary(SKBLT.pc$`aveRSV_PChangeFrom-1`)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+#-49.689  -9.184   1.449   2.661   9.630 111.268       1 
+
+SKBLT.p9<- SKBLT.p[-c(1:60),]
+SKBLT.pc9<-PercChange(SKBLT.p9, Var = "aveRSV", slideBy = -1)
+SKBLT.pc9[is.na(SKBLT.pc9)]<- 0 
+summary(SKBLT.pc9$`aveRSV_PChangeFrom-1`)
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+#-49.6894  -7.1545   0.8283   1.9474   8.7086 111.2676
+#########################
+
+#Checking seasonality
+count_ma<- ts(na.omit(SKBLT.p$aveRSF), frequency = 12)
+decomp<-stl(count_ma, s.window = "periodic")
+plot(decomp)
+decomp<- as.ts(decomp)
+decomp
+deseason<- seasadj(decomp)
+
+install.packages("forecast")
+library(forecast)
+autoplot(decomp)
+ggseasonplot(deseason, year.lables = T, continuous = T, polar = T)
