@@ -2,11 +2,7 @@
 title: "SBL_analysis"
 author: "Steven Lawrence"
 date: "September 13, 2019"
-output: 
-  html_document:
-    code_folding: hide
-    toc: true
-    toc_float: true 
+output: github_document
 ---
 
 #Data Retrival and Manipulation
@@ -135,3 +131,45 @@ install.packages("forecast")
 library(forecast)
 autoplot(decomp)
 ggseasonplot(deseason, year.lables = T, continuous = T, polar = T)
+
+#########################
+
+Creating a data frame of the non white population which will be inverted values of the white population scores. 
+```{r}
+Region<- c("Alabama", "Alaska","Arizona", "Arkansas", "California", "Colorado","Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", " Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada","New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", " South Dakota", "Tennessee", "Texas", "Utah", "Vermont", " Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming")
+
+wonly<- c(65.4,60.3,54.4,72.2,36.8,67.9,66.5,61.9,37.1,53.5,52.4,21.8,81.7,61.0,78.9,85.3,75.7,84.3, 58.6,93.1,50.5,71.4,74.9,79.5,56.5, 79.3,85.9,78.6,48.7,90.0,54.9,37.1,55.4,62.8,84.0,78.7,65.3,75.3,76.1,0.8,72.0,63.7,81.4,73.7,41.5,78,92.5,61.5,68.0,92.1,81.1,83.8 )
+
+woPop<- data.frame(Region,wonly)
+woPop %>% mutate_if(is.factor, as.character) -> woPop
+
+
+```
+skblr.naomit
+
+skblmmp<- merge(woPop, skblr.naomit, by ="Region", all = T )
+skblmmp
+
+skblmmp.naomit<- na.omit(skblmmp)
+
+skblmmp.naomit<- skblmmp.naomit[order(-skblmmp.naomit$aveRSF),]
+
+skblmmp.naomit$nwp<- 100 - skblmmp.naomit$wonly
+
+skblmmp.naomit<- skblmmp.naomit[order(-skblmmp.naomit$nwp),]
+skblmmp.naomit
+
+skblm1<- as_tibble(skblmmp.naomit)
+skblm1<- skblm1%>%dplyr::mutate(region=stringr::str_to_lower(Region))
+sMap<- ggplot2::map_data("state")
+#skblmm = skin bleaching lightening merge map
+skblmm1<- merge(sMap, skblm1, by = 'region')
+skblmm1<- skblmm1%>% dplyr::left_join(x=., y = sMap, by ='region')
+skblmm1
+skblmm1<- skblmm1[,-c(7,)]
+colnamesskblmm1
+
+skblmm1%>% ggplot(aes(x=long, y = lat.y))+ geom_polygon(aes(group = group.y, fill = log(nwp)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+
+
+Extracting Census data
