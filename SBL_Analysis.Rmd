@@ -92,17 +92,31 @@ SKBLT<-SKBLT %>%
     names_from = month,
     values_from  = ave_rsv
   ) %>% 
-  as.tibble()
-  
+  as.data.frame() 
 head(SKBLT)
+
+SKBLT_long<- SKBLT %>% 
+  pivot_longer(
+    Jan:Dec,
+    names_to = "month",
+    values_to = "ave_rsv"
+  ) %>% 
+  group_by(month) 
+  ggplot(aes(x = month, y = ave_rsv ))+geom_boxplot()
+  
+
 
 ```
 
-
+The kruskal test was used instead of anova for non parametric data to assese differences in sbl months. 
 
 ```{r}
 
-anova(SKBLT)
+kruskal.test(ave_rsv ~ month, data = SKBLT_long)
+
+summary(res.aov)
+
+TukeyHSD(res.aov)
 
 ```
 
