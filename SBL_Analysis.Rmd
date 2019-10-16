@@ -17,11 +17,9 @@ Loading Libraries
 
 ```{r Libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(ggplot2)
 library(tseries)
 library(DataCombine)
 library(forecast)
-library(dplyr)
 library(knitr)
 library(pastecs)
 library(grid)
@@ -44,6 +42,8 @@ Both temporal datasets were retrieve from trends.google.com via csv files and ar
 skBT<- read.csv("C:/Users/brian/Documents/Biostatistis Mount Sinai/SBL-Global/drive-download-20190913T154116Z-001/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
 skBT<- skBT[-1,]
 skBT$RSV<- as.numeric(skBT$RSV)
+
+
 ```
 
 Head and Tail of Skin Bleaching temporal trend dataset
@@ -70,16 +70,40 @@ Here I merged the two temporal datasets to create a new variable that is the ave
 ## merging bleaching and lightening data temporal data sets relative search volumes by time##
 
 SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+head(SKBLT)
 
-colnames(SKBLT)<- c("Date","Bleaching", "Lightening")
+SKBLT<-SKBLT %>% 
+  rename(
+    Date = Time, 
+    Bleaching = RSV.x,
+    Lightening = RSV.y) %>% 
+  mutate(
+    aveRSV = (Bleaching + Lightening)/2
+  ) %>% 
+  select(Date,aveRSV) %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year)
+    ) %>% 
+  pivot_wider(
+    names_from = month,
+    values_from  = ave_rsv
+  ) %>% 
+  as.tibble()
+  
+head(SKBLT)
 
-#creating an average variable of bleaching and lightening temporal RSV's
+```
 
-SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
-#creating a subset of SKBLT only time and average RSV 
-SKBLT.p<- SKBLT[,c(1,4)]
-head(SKBLT.p)
-tail(SKBLT.p)
+
+
+```{r}
+
+anova(SKBLT)
+
 ```
 
 Using the tseries and forecast package we analyazed the temporal trend. 
@@ -149,17 +173,24 @@ sklr$RSF<- as.numeric(sklr$RSF)
 
 skblr<- merge(skbr,sklr, by = "Region", sort = T)
 colnames(skblr)<- c("Region","Bleaching","Lightening")
-#skblr
+skblr
 
-skblr$$
+skblr[is.na(skblr)]<- 0
 
-skblr %>% filter()
-skblr.naomit<- na.omit(skblr)
 
-#skblr
-#skblr.naomit
+```
 
-skblr.naomit$aveRSF<- (skblr.naomit$Bleaching + skblr.naomit$Lightening)/2
+```{r}
+
+skblr <- skblr %>% 
+  mutate(aveRSF = (Bleaching+Lightening)/2) %>% 
+  select(Region, aveRSF)
+
+```
+
+```{r}
+
+skblr$aveRSF<- (skblr$Bleaching + skblr$Lightening)/2
 
 skblr.naomit
 
@@ -237,18 +268,45 @@ skblmm1%>% ggplot(aes(x=long, y = lat.y))+ geom_polygon(aes(group = group.y, fil
 ```{r}
 # Extracting Census data
 
-cenpop<- read.csv("./data/census/popestimates1317.csv", header = T, sep = ",",stringsAsFactors = F)
-head(cenpop)
+cenpop<-read_csv("./data/census/popestimates1317.csv") %>% 
+  select(everything(), -`Fact Note`) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+    sjlabelled::remove_all_labels() %>% 
+ rownames_to_column() %>% 
+ set_names(., 
+             .[1,]) %>% 
+  janitor::clean_names() %>% 
+  mutate_all(funs(gsub("[\\%]", " ", .))) %>% 
+  rename(
+    Region = fact,
+    Foreign_born = x42,
+    Internet_subscription = x44,
+    high_scho_or_higher = x40_3,
+    bach_degree_or_higher = x49_5,
+    persons_in_poverty = x41_2,
+    black = x47,
+    hispanic = x47_2) %>% 
+  mutate(.,
+    Foreign_born= as.numeric(Foreign_born),
+    Internet_subscription = as.numeric(Internet_subscription),
+    high_scho_or_higher = as.numeric(high_scho_or_higher),
+    bach_degree_or_higher = as.numeric(bach_degree_or_higher),
+    persons_in_poverty = as.numeric(persons_in_poverty),
+    black = as.numeric(black),
+    hispanic = as.numeric(hispanic))
 
-write.csv(cenpopr,"H:/Data/Personal/RStudio/census/popestimatesr.csv" )
 
+sbl_cenpop<- left_join(cenpop, skblr, by = "Region")
+sbl_cenpop_row <- sbl_cenpop[-1,]
+   
 
-cenpopr<- as.data.frame(t(cenpop))
-cenpopr<- cenpopr[-2,]
-cenpoprr<- read.csv("./data/census/popestimatesr.csv",header = T, sep=",", stringsAsFactors = F)
-dim(cenpoprr)
-cenpoprr$Foreign.born.persons..percent..2013.2017<-as.numeric(as.factor(cenpoprr$Foreign.born.persons..percent..2013.2017))
-cenpoprr[,-1]<-as.numeric(as.factor(cenpoprr[,-1]))
+fit = lm(aveRSF ~ Foreign_born + Internet_subscription +persons_in_poverty+black+hispanic ,  data = sbl_cenpop_row)
+
+summary(fit)
+```
+
+```{R}
 
 
 ##### summary of important variables
