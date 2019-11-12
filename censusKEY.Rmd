@@ -1,0 +1,60 @@
+---
+title: "censusAPI"
+author: "Steven Lawrence"
+date: "October 30, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Adding census key to environmnet
+
+```{r}
+Sys.setenv(census_key = "8e8b6ae296616733e0ed914129abc2c8563c9617")
+
+readRenviron("~/.Renviron")
+
+Sys.getenv("census_key")
+```
+
+```{r}
+install.packages("censusapi") 
+library(censusapi)
+```
+
+```{r}
+listCensusApis() %>% 
+  view()
+
+listCensusMetadata(name = "pep/charage",
+                   type = "variables",
+                   vintage = 2018)
+
+listCensusMetadata(name = "pep/charage",
+                   type = "geography",
+                   vintage = 2016)
+
+getCensus(name = "pep/charage",
+          vars = c("RACE", "AGE", "POP"),
+          vintage  = 2010,
+          region = "state:*")
+```
+
+```{r}
+
+listCensusMetadata(name = "timeseries/eits/hv",
+                   type = "variables" )
+
+listCensusMetadata(name = "pep/housing",
+                   type = "geography")
+
+getCensus(name = "timeseries/eits/hv",
+          vars = c("time_slot_id", "seasonally_adj","category_code","cell_value"),
+          time  = "from 2004 to 2010",
+          region = "us:*",
+          data_type_code = "VACANT")
+```
+```
+

@@ -1,213 +1,57 @@
----
-title: "SBL_analysis"
-author: "Steven Lawrence"
-date: "September 13, 2019"
-output: github_document
----
+######################################################
+# Sbl - global (US) temporal and  regional analysis  #
+#                                                    #
+# Steven Lawrence                                    #
+# Cleaned code 09.06.19                              #
+######################################################
 
-#Data Retrival and Manipulation
+#####################
+### Pachages used ###
+#####################
 
-Here I am installing all libraries neccessary for analysis
-
-```{r Libraries Install, echo=TRUE, eval=FALSE, message=FALSE}
-install.packages(c("tidyverse","ggplot2","tseries","DataCombine","forecast","dplyr","knitr","pastecs","grid","formattable","gridExtra","viridis","viewpoint"))
-
-```
-Loading Libraries
-
-```{r Libraries, message=FALSE, warning=FALSE}
-library(tidyverse)
 library(tseries)
 library(DataCombine)
-library(forecast)
-library(knitr)
-library(pastecs)
-library(grid)
-library(formattable)
-library(gridExtra)
-library(viridis)
-library(magrittr)
-library(qwraps2)
 
-```
+#####################
 
+### Loading Skin bleaching and skin lightening temporal data sets ########################################################################################
 
-##Geographic Analysis 
-
-
-##Temporal Trend
-Both temporal datasets were retrieve from trends.google.com via csv files and are depicted below showing the head and tail of each. 
-
-```{r Skin Bleaching Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
-skBT<- read.csv("C:/Users/brian/Documents/Biostatistis Mount Sinai/SBL-Global/drive-download-20190913T154116Z-001/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
+skBT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
 skBT<- skBT[-1,]
 skBT$RSV<- as.numeric(skBT$RSV)
 
-
-```
-
-Head and Tail of Skin Bleaching temporal trend dataset
-```{r SKBT head and tail ,message=FALSE, warning=FALSE, echo=FALSE}
-head(skBT)
-tail(skBT)
-```
-
-```{r Skin Lightening Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
-skLT<- read.csv("C:/Users/brian/Documents/Biostatistis Mount Sinai/SBL-Global/drive-download-20190913T154116Z-001/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",", stringsAsFactors = F, col.names = c("Time","RSV"))
+skLT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",", stringsAsFactors = F, col.names = c("Time","RSV"))
 skLT<- skLT[-1,]
 skLT$RSV<- as.numeric(skLT$RSV)
-```
-Head and tail of skin lightening temporal trend dataset
-```{r SKLt head and tail ,message=FALSE, warning=FALSE, echo=FALSE}
-
-head(skLT)
-tail(skLT)
-```
-Here I merged the two temporal datasets to create a new variable that is the average of the two.  The head and tail is shown below.
-
-```{r Merged Temporal Trend Data, message=FALSE, warning=FALSE}
 
 ## merging bleaching and lightening data temporal data sets relative search volumes by time##
 
 SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+
+colnames(SKBLT)<- c("Date","Bleaching", "Lightening")
+
+#creating an average variable of bleaching and lightening temporal RSV's
+
+SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
 head(SKBLT)
-
-SKBLT<-SKBLT %>% 
-  rename(
-    Date = Time, 
-    Bleaching = RSV.x,
-    Lightening = RSV.y) %>% 
-  mutate(
-    aveRSV = (Bleaching + Lightening)/2
-  ) %>% 
-  select(Date,aveRSV) %>% 
-  janitor::clean_names() %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year)
-    ) %>% 
-  pivot_wider(
-    names_from = month,
-    values_from  = ave_rsv
-  ) %>% 
-  as.data.frame() 
-head(SKBLT)
-
-#SKBLT_long<- 
-SKBLT %>% 
-  pivot_longer(
-    Jan:Dec,
-    names_to = "month",
-    values_to = "ave_rsv"
-  ) %>% 
-  group_by(month) %>% 
-  summarize(
-    rsv_mean = mean(ave_rsv, na.rm = T),
-    sample = n(),
-    sd = sd(ave_rsv, na.rm = T),
-    se=sd/sqrt(sample),
-    ci = qt(0.975, df=sample -1)*se,
-    med_rsv = median(ave_rsv, na.rm = T),
-    iqr_rsv = IQR(ave_rsv, na.rm = T)
-  )%>% 
-  mutate(month = as.factor(month)) %>% 
-  arrange(-med_rsv)
-
-levels(SKBLT_long$month)
+#creating a subset of SKBLT only time and average RSV 
+SKBLT.p<- SKBLT[,c(1,4)]
+head(SKBLT.p)
 
 
+###########################
+# Temporal trend analysis #
+#################################################################################################################################
 
-levels(SKBLT_long$month)
-contrasts()
-head(SKBLT_long)
-
- SKBLT_long %>%  
-   ggplot(aes(x = month, y = ave_rsv ))+
-   geom_violin()+
-   ggtitle("Mean Score By Month")
-  
-
-
-```
-
-The kruskal test was used instead of anova for non parametric data to assese differences in sbl months. 
-
-```{r}
-
-
-res.aov<-aov(ave_rsv ~ month, data = SKBLT_long)
-summary(res.aov)
-
-kruskal.test()
-median(SKBLT$Jun)
-median(SKBLT$Jul, na.rm = T)
-TukeyHSD(res.aov)
-
-Li<- data.frame(
-Apr = 50.375*-1,
-Aug = 46.2*-1,
-Dec = 47.03333*-1,
-Feb = 42.78125*-1,
-Jan = 40.125*-1,
-Jul = 57.43333*4,
-Jun = 57.5*4,
-Mar = 46.4375*-1,
-May = 51.625*-1,
-Nov = 37.93333*-1) %>% 
-  pivot_longer(
-    Apr:Nov,
-    names_to = "Month",
-    values_to = "Li"
-  )
-
-Li
-L = sum(Li$Li)
-n= 16
-ssc = (n*(L)^2)/(40)
-Fstat_l= ssc/247.8
-
-
-df = (12-1)*qf(0.95, df1 = (12-1), df2 = (16-12))
-
-Fstat_l
-df
-
-F_c=qf(0.95, df1 = 1, df2 = 65.29)
-#confidence interval
-#Fstat_1+F_c*/sqrt(16)
-
-pf(15.257,1,65.29394, lower.tail = F)
-
-#The F statistic of the means of June and July being different than the other months is F = 15.25794 with 65 degrees of Freedom.
-
-#We reject the null and concluded that Jun and July are significantly differenct. ...
-```
-
-Using the tseries and forecast package we analyazed the temporal trend. 
-
-```{r time series object, message=FALSE, warning=FALSE}
 #creating a time series object in order to plot the temporal trend as a time series element
 SKBLT.ts<- ts(SKBLT.p$aveRSV)
 
-```
-
-This plot is SBL queries by month in the United States from 2004 - 2019. 
-```{r temporal trend plot, message=FALSE, warning=FALSE}
 #plotting sbl quries over time with a resolution of months 
-plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months", ylab = "Relative Search Volume")
-```
-Here I provide some discriptive statistics of the overall temporal trend. 
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")+plot(SKBLT.ts, type = "o")
 
-Then data is not normally distributed there for I recorded the median and IQR `median_iqr(SKBLT.p$aveRSV)`
-```{r Discriptibe Statisics}
-hist(SKBLT.p$aveRSV, n = 40)
-mean_skbl<-mean(SKBLT.p$aveRSV)
-mean_skbl
+### calculating percent change over time. ###
 
 
-```
 SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRSV", slideBy = -1)
 SKBLT.pc
 summary(SKBLT.pc$`aveRSV_PChangeFrom-1`)
@@ -234,43 +78,38 @@ install.packages("forecast")
 library(forecast)
 autoplot(decomp)
 ggseasonplot(deseason, year.lables = T, continuous = T, polar = T)
+```
 
-#########################
 
-Creating a data frame of the non white population which will be inverted values of the white population scores. 
 ```{r}
-skbr<- read.csv(file="./data/GtrendData/SkinBleachingRegion1317.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSV"))
+setwd()
+skbr<- read.csv(file="H:/Personal/DesktopFiles/GtrendData/SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr
 skbr<- skbr[c(-1,-2),]
-skbr$RSV<- as.numeric(skbr$RSV)
+skbr$RSF<- as.numeric(skbr$RSF)
 head(skbr)
 
-skbr[is.na(skbr)]<- 0
-skbr %>% 
-  ggplot(aes(RSV))+geom_histogram()
-
-sklr<- read.csv("./data/GtrendData/SkinLighteningRegion1317.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSV"))
+sklr<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
 sklr<- sklr[-1,]
-sklr$RSV<- as.numeric(sklr$RSV)
+sklr$RSF<- as.numeric(sklr$RSF)
 sklr
 
 skblr<- merge(skbr,sklr, by = "Region", sort = T)
 colnames(skblr)<- c("Region","Bleaching","Lightening")
-#skblr
+skblr
 
-skblr[is.na(skblr)]<- 0
+skblr.naomit<- na.omit(skblr)
 
+skblr
+skblr.naomit
 
-```
+skblr.naomit$aveRSF<- (skblr.naomit$Bleaching + skblr.naomit$Lightening)/2
 
-```{r}
+skblr.naomit
 
-skblr <- skblr %>% 
-  mutate(aveRSV = (Bleaching+Lightening)/2) %>% 
-  select(Region, aveRSV)
+skblr.ave<- skblr.naomit[,c(1,4)]
 
-```
-
-```{r}
+skblr.ave
 
 
 
@@ -302,6 +141,117 @@ print(skblr.nwpop)
 
 
 
+```
+```{r}
+library(tidyverse)
+install.packages(dplyr)
+library(dplyr)
+#skblm = skin bleaching lightening merge
+skblm<- as_tibble(skblr.naomit)
+skblm<- skblm%>%dplyr::mutate(region=stringr::str_to_lower(Region))
+sMap<- ggplot2::map_data("state")
+
+#skblmm = skin bleaching lightening merge map
+skblmm<- merge(sMap, skblm, by = 'region')
+skblmm<- skblm%>% dplyr::left_join(x=., y = sMap, by ='region')
+
+theme1<- function() {
+  theme_bw() +
+    theme(panel.background = element_blank()) +
+    theme(plot.background = element_rect(fill = "seashell")) +
+    theme(panel.border = element_blank()) +                     # facet border
+    theme(strip.background = element_blank()) +                 # facet title background
+    theme(plot.margin = unit(c(.5, .5, .5, .5), "cm")) +
+    theme(panel.spacing = unit(3, "lines")) +
+    theme(panel.grid.major = element_blank()) +
+    theme(panel.grid.minor = element_blank()) +
+    theme(legend.background = element_blank()) +
+    theme(legend.key = element_blank()) +
+    theme(legend.title = element_blank())
+}
+
+theme2 <- function(){
+  theme1()+
+    theme(axis.title = element_blank())+
+    theme(axis.text = element_blank())+
+    theme(axis.ticks = element_blank())
+}
+head(skblmm)
+skblmm
+
+skblmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(aveRSF)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region 2004 - 2019")
+
+
+
+```
+
+
+```{r}
+year<- read.csv("year.csv", header = T, stringsAsFactors = F, sep =",")
+dim(year)
+year<- year[,c(8,9,10,11)]
+year<-na.omit(year)
+dim(year)
+year
+summary(year$percent.Difference.1)*100
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#-17.053   4.256  12.079  11.688  16.188  45.038 
+```
+
+```{r}
+install.packages("pastecs")
+library(pastecs)
+
+data(marbio)
+marbio
+#data is very skewed right
+hist(marbio[,8])
+trend.test(marbio[,8])
+#data:  marbio[, 8] and time(marbio[, 8])
+#S = 43853, p-value = 0.1841
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+#      rho 
+#0.1630113 
+mm<- trend.test(marbio[,8], R=99)
+mm
+mm$p.value
+plot(mm)
+#######################################
+
+SKBLT.ts
+trend.test(SKBLT.ts)
+acf(SKBLT.ts, lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019")
+
+# to correct for serial correlation
+(acf(diff(SKBLT.ts), lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019"))
+
+acf(SKBLT.ts, type = "partial")
+#Cannot compute exact p-value with ties
+#	Spearman's rank correlation rho
+
+#data:  SKBLT.p[, 2] and time(SKBLT.p[, 2])
+#S = 224180, p-value < 2.2e-16
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+#      rho 
+#0.7909619 
+trend.skblt<- trend.test(SKBLT.ts)
+plot(trend.skblt)
+trend.skblt$p.value
+trend.skblt
+
+trend.skblt2<- trend.test(diff(SKBLT.ts))
+trend.skblt2
+version
+
+summary(linmod)
+corr
+sqrt(0.6)
+```
+
+
+```{r}
 Region<- c("Alabama", "Alaska","Arizona", "Arkansas", "California", "Colorado","Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", " Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada","New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", " South Dakota", "Tennessee", "Texas", "Utah", "Vermont", " Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming")
 
 wonly<- c(65.4,60.3,54.4,72.2,36.8,67.9,66.5,61.9,37.1,53.5,52.4,21.8,81.7,61.0,78.9,85.3,75.7,84.3, 58.6,93.1,50.5,71.4,74.9,79.5,56.5, 79.3,85.9,78.6,48.7,90.0,54.9,37.1,55.4,62.8,84.0,78.7,65.3,75.3,76.1,0.8,72.0,63.7,81.4,73.7,41.5,78,92.5,61.5,68.0,92.1,81.1,83.8 )
@@ -309,7 +259,8 @@ wonly<- c(65.4,60.3,54.4,72.2,36.8,67.9,66.5,61.9,37.1,53.5,52.4,21.8,81.7,61.0,
 woPop<- data.frame(Region,wonly)
 woPop %>% mutate_if(is.factor, as.character) -> woPop
 
-
+woPop
+skblr.naomit
 
 skblmmp<- merge(woPop, skblr.naomit, by ="Region", all = T )
 skblmmp
@@ -330,83 +281,48 @@ sMap<- ggplot2::map_data("state")
 skblmm1<- merge(sMap, skblm1, by = 'region')
 skblmm1<- skblmm1%>% dplyr::left_join(x=., y = sMap, by ='region')
 skblmm1
-skblmm1<- skblmm1[,-c(7)]
+skblmm1<- skblmm1[,-c(7,)]
 colnamesskblmm1
 
 skblmm1%>% ggplot(aes(x=long, y = lat.y))+ geom_polygon(aes(group = group.y, fill = log(nwp)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
 
-
 ```
-
 
 ```{r}
-# Extracting Census data
+###### pop estimates
+cenpop<- read.csv("H:/Data/Personal/RStudio/census/popestimates1317.csv", header = T, sep = ",",stringsAsFactors = F)
+head(cenpop)
 
-cenpop<-read_csv("./data/census/popestimates1317.csv") %>% 
-  select(everything(), -`Fact Note`) %>% 
-  t() %>% 
-  as.data.frame() %>% 
-    sjlabelled::remove_all_labels() %>% 
- rownames_to_column() %>% 
- set_names(., 
-             .[1,]) %>% 
-  janitor::clean_names() %>% 
-  mutate_all(funs(gsub("[\\%]", " ", .))) %>% 
-  rename(
-    Region = fact,
-    Foreign_born = x42,
-    Internet_subscription = x44,
-    high_scho_or_higher = x40_3,
-    bach_degree_or_higher = x49_5,
-    persons_in_poverty = x41_2,
-    black = x47,
-    hispanic = x47_2,
-    white_alone = x51,
-    age_under_18 = x41,
-    age_65_over = x34) %>% 
-  mutate(.,
-    Foreign_born= as.numeric(Foreign_born),
-    Internet_subscription = as.numeric(Internet_subscription),
-    high_scho_or_higher = as.numeric(high_scho_or_higher),
-    bach_degree_or_higher = as.numeric(bach_degree_or_higher),
-    persons_in_poverty = as.numeric(persons_in_poverty),
-    black = as.numeric(black),
-    hispanic = as.numeric(hispanic),
-    non_white = 100 - as.numeric(white_alone),
-    age_under_18 = as.numeric(age_under_18),
-    age_65_over = as.numeric(age_65_over),
-    age_18to64 = abs(100-(age_under_18+age_65_over)))
+write.csv(cenpopr,"H:/Data/Personal/RStudio/census/popestimatesr.csv" )
 
-view(sbl_cenpop)
-sbl_cenpop<- left_join(cenpop, skblr, by = "Region")
-sbl_cenpop_row <- sbl_cenpop[-1,]
-   
-view(sbl_cenpop_row)
-fit = lm(aveRSV ~ Foreign_born + Internet_subscription+black+hispanic+high_scho_or_higher + ,  data = sbl_cenpop_row)
 
-summary(fit)
+cenpopr<- as.data.frame(t(cenpop))
+cenpopr<- cenpopr[-2,]
+cenpoprr<- read.csv("H:/Data/Personal/RStudio/census/popestimatesr.csv",header = T, sep=",", stringsAsFactors = F)
+dim(cenpoprr)
+cenpoprr$Foreign.born.persons..percent..2013.2017<-as.numeric(as.factor(cenpoprr$Foreign.born.persons..percent..2013.2017))
+cenpoprr[,-1]<-as.numeric(as.factor(cenpoprr[,-1]))
 
-\### look into using the census api agian
-### focus on skin bleaching
-library(tidyverse)
+summary(cenpoprr$Foreign.born.persons..percent..2013.2017)
 
-view(skblr)
-summary(skblr$aveRSV)
+skblmmp<- merge(cenpoprr, skblr.naomit, by ="Region", all = T )
 
-skblr %>% 
-  filter(aveRSV > 0) %>% 
-     ggplot(aes(x = log(aveRSV)))+geom_density()
+cor.test(skblmmp$Foreign.born.persons..percent..2013.2017, skblmmp$aveRSF)
 
-skblr %>% 
-  filter(aveRSV > 0) %>%
-  summary(aveRSV)
-    
+cor.test(skblmmp$Hispanic.or.Latino..percent, skblmmp$aveRSF)
+0.17
+
+cenpoprr
+
+cenpopr$V18
+cenpopr
+summary(cenpopr$V18)
+
+cenf<-as.numeric(cenpopr$V18)
+
+cenf
 ```
 
-```{R}
-
-
-```
 
 ```{r}
 library(viridis)
@@ -891,18 +807,18 @@ AllBL.tsw
 
 ```
 
-##census data
-
 ```{r}
+######################
+
+##Census data
 
 
-cen1317<- read.csv("./data/InternetAccess/internetaccess_1317.csv", header = T, sep = ",", stringsAsFactors = F)
-
+cen1317<- read.csv("H:/Data/Personal/RStudio/InternetAccess/internetaccess_1317.csv", header = T, sep = ",", stringsAsFactors = F)
 head(cen1317)
 cen1317$Internet.Access<- cen1317$Internet.Access*100
 
 
-cen03<- read.csv("./data/InternetAccess/InternetAccess 2003.csv", header = T, sep = ",", stringsAsFactors = F)
+cen03<- read.csv("H:/Data/Personal/RStudio/InternetAccess/InternetAccess 2003.csv", header = T, sep = ",", stringsAsFactors = F)
 head(cen03)
 
 cenMerge<- merge(cen1317, cen03, by = "Region")
@@ -941,8 +857,6 @@ cenSL
 scatter.smooth(cenSL$Internet1317[cenSL$skin.lightening.2017>0]/cenSL$Internet2003[cenSL$skin.lightening.2017>0], cenSL$skin.lightening.2017[cenSL$skin.lightening.2017>0], ylab = "SL Interest 2017", xlab = "Internet Access 2003 - 2017")
 
 write.csv(cenSL,"H:/Data/Personal/RStudio/InternetAccess/census_Int_SL.csv", row.names = T)
-
 ```
-
 
 
