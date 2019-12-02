@@ -21,6 +21,7 @@ Sys.getenv("census_key")
 
 ```{r}
 install.packages("censusapi") 
+library(tidyverse)
 library(censusapi)
 ```
 
@@ -44,17 +45,22 @@ getCensus(name = "pep/charage",
 
 ```{r}
 
-listCensusMetadata(name = "timeseries/eits/hv",
+listCensusMetadata(name = "timeseries/poverty/saipe",
                    type = "variables" )
 
-listCensusMetadata(name = "pep/housing",
+listCensusMetadata(name = "timeseries/poverty/saipe",
                    type = "geography")
 
-getCensus(name = "timeseries/eits/hv",
-          vars = c("time_slot_id", "seasonally_adj","category_code","cell_value"),
+getCensus(name = "timeseries/poverty/saipe",
+          vars = c(""),
           time  = "from 2004 to 2010",
           region = "us:*",
           data_type_code = "VACANT")
 ```
+```
+
+```{r}
+install.packages("RSocrata")
+
 ```
 

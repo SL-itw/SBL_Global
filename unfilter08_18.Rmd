@@ -1,7 +1,7 @@
 ---
-title: "SkinBleaching"
+title: "unFiltered"
 author: "Steven Lawrence"
-date: "November 8, 2019"
+date: "November 18, 2019"
 output: html_document
 ---
 
@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ###Packages Used
+
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(tseries)
@@ -17,6 +18,10 @@ library(forecast)
 library(pastecs)
 library(gridExtra)
 library(ggpubr)
+
+###Discussion#####
+### further research should look at sociodemographic projidles to identify populations at risk. 
+### Potencial selection bias. 
 ```
 #Skin Bleaching Time Series Analysis
 
@@ -26,17 +31,10 @@ Here I am loading in the data.  This dataset contains information for years 2004
 
 ```{r Skin Bleaching Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
 
-skbt<- read.csv("./data/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
+skbt<- read.csv("./data/GtrendData/bleachingTime08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
 
 skbt<- skbt[-1,] %>% 
  mutate(rsv = as.numeric(rsv))
-
-sklt<- read.csv("./data/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
-
-sklt<- sklt[-1,] %>% 
- mutate(rsv = as.numeric(rsv))
-
-
 
 ```
 
@@ -45,7 +43,7 @@ sklt<- sklt[-1,] %>%
 skbt %>%
   rename(
     date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+    separate(date, into = c("year","month"), sep = "\\-" ) %>% 
   mutate(
     month = as.numeric(month),
     month = month.abb[month],
@@ -53,7 +51,8 @@ skbt %>%
     month = as.factor(month)) %>%
   arrange(year) %>% 
   filter(year >= 2008) %>% 
-  ggplot(aes(x = rsv))+geom_density()
+  replace_na(rsv, 0) %>% 
+  ggplot(aes(x = rsv))+geom_histogram()
 
 
 ```
@@ -154,7 +153,7 @@ skbt %>%
     year = as.numeric(year),
     month = as.factor(month)) %>%
   arrange(year) %>% 
-  filter(year >= 2008) %>% 
+  group_by(year) %>% #look at change by year | distribution by year | change in the median or mean by year
   PercChange( Var = "rsv", slideBy = -1) %>% 
   summary() %>% 
   knitr::kable()
@@ -223,7 +222,7 @@ skbt %>% rename(
 
 
 ```{r}
-p1<- skbt %>% rename(
+ skbt %>% rename(
     date = time) %>% 
   separate(date, into = c("year","month"), sep = "\\-" ) %>% 
   mutate(
@@ -232,15 +231,21 @@ p1<- skbt %>% rename(
     year = as.numeric(year),
     month = as.factor(month)) %>%
   arrange(year) %>% 
-  filter(year >= 2008) %>% 
+  #filter(year >= 2008) %>% 
   pull(rsv) %>% 
   na.omit() %>% 
   ts(frequency = 12) %>% 
-  stl( s.window = "periodic") %>% 
-  seasadj() %>% 
+  stl( s.window = "periodic") #%>% 
+   #%>% 
+  
+  ts() %>% 
+  #seasadj() %>% 
   ggsubseriesplot(main = "Skin Bleaching")
 
-p2<- sklt %>% rename(
+```
+
+```{r, eval = FALSE}
+#p2<- sklt %>% rename(
     date = time) %>% 
   separate(date, into = c("year","month"), sep = "\\-" ) %>% 
   mutate(
@@ -257,12 +262,12 @@ p2<- sklt %>% rename(
   seasadj() %>% 
   ggsubseriesplot(main ="Skin Lightening")
 
-skblt <- left_join(skbt,sklt, by = "time") %>% 
+#skblt <- left_join(skbt,sklt, by = "time") %>% 
   mutate(rsv = (rsv.x + rsv.y) /2) %>% 
   select(time, rsv)
 
 
-p3<-skblt %>% rename(
+#p3<-skblt %>% rename(
     date = time) %>% 
   separate(date, into = c("year","month"), sep = "\\-" ) %>% 
   mutate(
@@ -279,7 +284,7 @@ p3<-skblt %>% rename(
   seasadj() %>% 
   ggsubseriesplot(main = "merged")
 
-ggarrange(p3,p1,p2)
+#ggarrange(p3,p1,p2)
 ```
 
 #Skin Bleaching Regional Analysis
