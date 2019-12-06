@@ -1,0 +1,69 @@
+x<- runif(20)
+y<- x/2
+library(ggplot2)
+library(dplyr)
+plot_df<- data.frame(x,y)
+plot_df%>%ggplot(aes(x,y))+geom_point()
+#####Loading Skin bleaching and skin lightening data set############
+#skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- skBT[-1,]
+skBT$RSF<- as.numeric(skBT$RSF)
+skBT
+skBT$RSF<- as.numeric(skBT$RSV)
+#####Loading Skin bleaching and skin lightening data set############
+#skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
+skBT<- skBT[-1,]
+skBT$RSF<- as.numeric(skBT$RSV)
+skBT
+#####Loading Skin bleaching and skin lightening data set############
+#skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSV"))
+skBT<- skBT[-1,]
+skBT$RSV<- as.numeric(skBT$RSV)
+skBT
+skLT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",", stringsAsFactors = F, col.names = c("Time","RSV"))
+skLT<- skLT[-1,]
+skLT$RSV<- as.numeric(skLT$RSV)
+SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
+#creating a subset of SKBLT only only time and average RSV
+SKBLT.p<- SKBLT[,c(1,4)]
+#creating a time series object in order to plot the temporal trend as a time series element
+SKBLT.ts<- ts(SKBLT.p$aveRSF)
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")+plot(SKBLT.ts, type = "o")
+#creating a time series object in order to plot the temporal trend as a time series element
+SKBLT.ts<- ts(SKBLT.p$aveRSF)
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")+plot(SKBLT.ts, type = "o")
+SKBLT.p
+#creating a subset of SKBLT only only time and average RSV
+SKBLT.p<- SKBLT[,c(1,4)]
+SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
+SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+colnames(SKBLT)<- c("Date","Bleaching", "Lightening")
+SKBLT$aveRSV<- (SKBLT$Bleaching+SKBLT$Lightening)/2
+head(SKBLT)
+#creating a subset of SKBLT only only time and average RSV
+SKBLT.p<- SKBLT[,c(1,4)]
+head(SKBLT.p)
+#creating a time series object in order to plot the temporal trend as a time series element
+SKBLT.ts<- ts(SKBLT.p$aveRSF)
+#creating a time series object in order to plot the temporal trend as a time series element
+SKBLT.ts<- ts(SKBLT.p$aveRSV)
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")+plot(SKBLT.ts, type = "o")
+library(tseries)
+library(DataCombine)
+SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRSF", slideBy = -1)
+SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRVF", slideBy = -1)
+SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRSV", slideBy = -1)
+SKBLT.pc
+summary(SKBLT.pc$`aveRSF_PChangeFrom-1`)
+summary(SKBLT.pc$`aveRSV_PChangeFrom-1`)
+SKBLT.p9<- SKBLT.p[-c(1:60),]
+SKBLT.pc9<-PercChange(SKBLT.p9, Var = "aveRSV", slideBy = -1)
+SKBLT.pc9
+is.na(SKBLT.pc9)<- 0
+SKBLT.pc9[is.na(SKBLT.pc9)]<- 0
+summary(SKBLT.pc$`aveRSV_PChangeFrom-1`)
+summary(SKBLT.pc9$`aveRSV_PChangeFrom-1`)

@@ -1,0 +1,115 @@
+---
+title: "Cencus API"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("censusapi")
+
+library(censusapi)
+
+Sys.setenv(CENSUS_KEY = "8e8b6ae296616733e0ed914129abc2c8563c9617")
+
+readRenviron("~/.Renviron")
+
+Sys.getenv("CENSUS_KEY")
+
+apis <- listCensusApis()
+View(apis)
+
+#getCensus(name = , vintage = , vars = , region = )
+
+install.packages("devtools")
+devtools::install_github("hrecht/censusapi")
+
+```
+
+
+```{r}
+sahie_vars <- listCensusMetadata(name = "timeseries/healthins/sahie", type = "variables")
+head(sahie_vars)
+sahie_vars
+
+listCensusMetadata(name = "timeseries/healthins/sahie", type = "geography")
+
+getCensus(name = "timeseries/healthins/sahie", 
+          vars = c("NAME", "IPRCAT", "IPR_DESC", "PCTUI_PT"),
+                   region= "us:*",
+                   time= 2017)
+
+sahie_states <-getCensus(name = "timeseries/healthins/sahie", 
+                         vars = c("NAME","IPRCAT","IPR_DESC","PCTUI_PT"),
+                         region = "state:*",
+                         time = 2017)
+
+head(sahie_states)
+```
+
+```{r}
+d_vars <- listCensusMetadata(name = "acs/acs1/profile", type = "variables", vintage = 2017)
+head(d_vars)
+
+listCensusMetadata(name = "acs/acs1/profile", type = "geography", vintage = 2017)
+
+getCensus(name = "timeseries/healthins/sahie", 
+          vars = c("NAME", "IPRCAT", "IPR_DESC", "PCTUI_PT"),
+                   region= "us:*",
+                   time= 2017)
+
+sahie_states <-getCensus(name = "timeseries/healthins/sahie", 
+                         vars = c("NAME","IPRCAT","IPR_DESC","PCTUI_PT"),
+                         region = "state:*",
+                         time = 2017)
+
+head(sahie_states)
+
+
+```
+
+```{r}
+state_vars <- listCensusMetadata(name = "timeseries/idb/1year", type = "variables")
+
+head(state_vars)
+
+listCensusMetadata(name = "timeseries/idb/1year", type = "variables")
+
+getCensus(name = "timeseries/idb/1year", 
+          vars = c("POP","SEX","YR","AGE"))
+
+pop_states <-getCensus(name = "timeseries/idb/1year", 
+                         vars = c("POP","SEX","YR","AGE"),
+                       AGE = "18:99",
+                       FIPS = "US",
+                       time = 2017)
+
+head(pop_states)
+
+pop_2050 <- getCensus(name = "timeseries/idb/1year",
+    vars = c("FIPS", "NAME", "AGE", "POP"),
+    time = 2050)
+pop_2050
+
+pop_us <- getCensus(name = "timeseries/idb/1year",
+    vars = c("NAME", "POP"),
+    time = 2050,
+    FIPS = "US",
+    AGE = "13:19")
+pop_us
+```
+
+
+```{r}
+
+listCensusMetadata(name = "acs/acs1", type = "variables", vintage = 2017)
+listCensusMetadata(name = "acs/acs1", type = "geography", vintage = 2017)
+getCensus(name = "	acs/acs1", 
+          vars = c("NAME","group(DP02PR_0106PE)")
+          )
+
+
+
+```

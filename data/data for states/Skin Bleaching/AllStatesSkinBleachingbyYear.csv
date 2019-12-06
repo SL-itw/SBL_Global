@@ -1,0 +1,817 @@
+"","Region","skin.bleaching","Year"
+"1","Delaware",100,2006
+"2","Mississippi",88,2006
+"3","Oklahoma",58,2006
+"4","Arkansas",49,2006
+"5","Rhode Island",46,2006
+"6","Nebraska",39,2006
+"7","Louisiana",36,2006
+"8","Oregon",36,2006
+"9","Alabama",36,2006
+"10","Maryland",34,2006
+"11","Nevada",33,2006
+"12","Iowa",31,2006
+"13","District of Columbia",30,2006
+"14","Virginia",30,2006
+"15","Georgia",28,2006
+"16","Texas",28,2006
+"17","South Carolina",26,2006
+"18","Utah",26,2006
+"19","Kentucky",25,2006
+"20","Tennessee",24,2006
+"21","California",23,2006
+"22","Colorado",23,2006
+"23","New Jersey",22,2006
+"24","Illinois",22,2006
+"25","New York",21,2006
+"26","North Carolina",20,2006
+"27","Florida",18,2006
+"28","Pennsylvania",18,2006
+"29","Indiana",17,2006
+"30","Washington",17,2006
+"31","Ohio",17,2006
+"32","Connecticut",16,2006
+"33","Michigan",16,2006
+"34","Minnesota",15,2006
+"35","Massachusetts",15,2006
+"36","Arizona",14,2006
+"37","Wisconsin",12,2006
+"38","Missouri",11,2006
+"39","North Dakota",NA,2006
+"40","South Dakota",NA,2006
+"41","New Hampshire",NA,2006
+"42","Hawaii",NA,2006
+"43","Alaska",NA,2006
+"44","Idaho",NA,2006
+"45","Kansas",NA,2006
+"46","Maine",NA,2006
+"47","Montana",NA,2006
+"48","New Mexico",NA,2006
+"49","Vermont",NA,2006
+"50","West Virginia",NA,2006
+"51","Wyoming",NA,2006
+"52","Mississippi",100,2004
+"53","Kansas",84,2004
+"54","Arkansas",81,2004
+"55","Louisiana",81,2004
+"56","Rhode Island",71,2004
+"57","Nevada",61,2004
+"58","Virginia",43,2004
+"59","Utah",42,2004
+"60","Alabama",40,2004
+"61","Wisconsin",36,2004
+"62","Washington",35,2004
+"63","Arizona",35,2004
+"64","Tennessee",32,2004
+"65","District of Columbia",29,2004
+"66","New Jersey",28,2004
+"67","Indiana",26,2004
+"68","Colorado",26,2004
+"69","Texas",26,2004
+"70","Connecticut",25,2004
+"71","Michigan",24,2004
+"72","North Carolina",20,2004
+"73","Massachusetts",20,2004
+"74","Florida",19,2004
+"75","California",18,2004
+"76","Missouri",17,2004
+"77","Ohio",17,2004
+"78","Pennsylvania",17,2004
+"79","Maryland",16,2004
+"80","Georgia",16,2004
+"81","Illinois",14,2004
+"82","New York",9,2004
+"83","West Virginia",NA,2004
+"84","Hawaii",NA,2004
+"85","Alaska",NA,2004
+"86","Delaware",NA,2004
+"87","Iowa",NA,2004
+"88","Idaho",NA,2004
+"89","Kentucky",NA,2004
+"90","Maine",NA,2004
+"91","Minnesota",NA,2004
+"92","Montana",NA,2004
+"93","North Dakota",NA,2004
+"94","Nebraska",NA,2004
+"95","New Hampshire",NA,2004
+"96","New Mexico",NA,2004
+"97","Oklahoma",NA,2004
+"98","Oregon",NA,2004
+"99","South Carolina",NA,2004
+"100","South Dakota",NA,2004
+"101","Vermont",NA,2004
+"102","Wyoming",NA,2004
+"103","Mississippi",100,2005
+"104","Nevada",89,2005
+"105","Arkansas",79,2005
+"106","New Mexico",77,2005
+"107","Utah",59,2005
+"108","Alabama",58,2005
+"109","Kentucky",53,2005
+"110","Virginia",46,2005
+"111","Iowa",43,2005
+"112","Oklahoma",43,2005
+"113","Louisiana",41,2005
+"114","South Carolina",39,2005
+"115","Michigan",38,2005
+"116","Kansas",38,2005
+"117","District of Columbia",37,2005
+"118","Indiana",37,2005
+"119","Connecticut",36,2005
+"120","Oregon",35,2005
+"121","Florida",35,2005
+"122","Texas",35,2005
+"123","Washington",34,2005
+"124","New York",30,2005
+"125","Georgia",30,2005
+"126","Pennsylvania",26,2005
+"127","Massachusetts",26,2005
+"128","California",25,2005
+"129","Tennessee",23,2005
+"130","Wisconsin",23,2005
+"131","New Jersey",23,2005
+"132","Colorado",22,2005
+"133","Arizona",22,2005
+"134","Maryland",21,2005
+"135","Ohio",20,2005
+"136","Illinois",18,2005
+"137","Missouri",16,2005
+"138","North Carolina",13,2005
+"139","Alaska",NA,2005
+"140","Delaware",NA,2005
+"141","Hawaii",NA,2005
+"142","Idaho",NA,2005
+"143","Maine",NA,2005
+"144","Minnesota",NA,2005
+"145","Montana",NA,2005
+"146","North Dakota",NA,2005
+"147","Nebraska",NA,2005
+"148","New Hampshire",NA,2005
+"149","Rhode Island",NA,2005
+"150","South Dakota",NA,2005
+"151","Vermont",NA,2005
+"152","West Virginia",NA,2005
+"153","Wyoming",NA,2005
+"154","Rhode Island",100,2007
+"155","Nevada",96,2007
+"156","Mississippi",91,2007
+"157","Nebraska",82,2007
+"158","Florida",55,2007
+"159","New Mexico",52,2007
+"160","Louisiana",51,2007
+"161","California",50,2007
+"162","North Carolina",49,2007
+"163","Georgia",43,2007
+"164","New York",40,2007
+"165","Kentucky",38,2007
+"166","South Carolina",37,2007
+"167","Indiana",35,2007
+"168","District of Columbia",34,2007
+"169","New Jersey",33,2007
+"170","Texas",32,2007
+"171","Illinois",32,2007
+"172","Connecticut",31,2007
+"173","Virginia",30,2007
+"174","Oregon",29,2007
+"175","Maryland",29,2007
+"176","Oklahoma",28,2007
+"177","Kansas",28,2007
+"178","Minnesota",27,2007
+"179","Colorado",27,2007
+"180","Missouri",26,2007
+"181","Pennsylvania",26,2007
+"182","Alabama",26,2007
+"183","Arizona",26,2007
+"184","Massachusetts",26,2007
+"185","Ohio",23,2007
+"186","Washington",23,2007
+"187","Michigan",21,2007
+"188","Tennessee",16,2007
+"189","Wisconsin",13,2007
+"190","Wyoming",NA,2007
+"191","West Virginia",NA,2007
+"192","South Dakota",NA,2007
+"193","Alaska",NA,2007
+"194","Hawaii",NA,2007
+"195","Arkansas",NA,2007
+"196","Delaware",NA,2007
+"197","Iowa",NA,2007
+"198","Idaho",NA,2007
+"199","Maine",NA,2007
+"200","Montana",NA,2007
+"201","North Dakota",NA,2007
+"202","New Hampshire",NA,2007
+"203","Utah",NA,2007
+"204","Vermont",NA,2007
+"205","District of Columbia",100,2008
+"206","Tennessee",85,2008
+"207","Florida",81,2008
+"208","Texas",77,2008
+"209","Arkansas",75,2008
+"210","Maryland",74,2008
+"211","Connecticut",71,2008
+"212","Nebraska",71,2008
+"213","South Carolina",69,2008
+"214","New York",68,2008
+"215","New Mexico",64,2008
+"216","Utah",61,2008
+"217","Alabama",58,2008
+"218","Rhode Island",58,2008
+"219","California",56,2008
+"220","Mississippi",54,2008
+"221","North Carolina",54,2008
+"222","Nevada",51,2008
+"223","Wisconsin",51,2008
+"224","Georgia",47,2008
+"225","Washington",46,2008
+"226","Massachusetts",45,2008
+"227","New Jersey",45,2008
+"228","Illinois",44,2008
+"229","Pennsylvania",41,2008
+"230","Arizona",41,2008
+"231","Kentucky",41,2008
+"232","Colorado",39,2008
+"233","Virginia",39,2008
+"234","Iowa",38,2008
+"235","Michigan",35,2008
+"236","Missouri",33,2008
+"237","Oklahoma",31,2008
+"238","Indiana",31,2008
+"239","Ohio",31,2008
+"240","Louisiana",27,2008
+"241","Minnesota",18,2008
+"242","Hawaii",NA,2008
+"243","Idaho",NA,2008
+"244","West Virginia",NA,2008
+"245","Alaska",NA,2008
+"246","Delaware",NA,2008
+"247","Kansas",NA,2008
+"248","Maine",NA,2008
+"249","Montana",NA,2008
+"250","North Dakota",NA,2008
+"251","New Hampshire",NA,2008
+"252","Oregon",NA,2008
+"253","South Dakota",NA,2008
+"254","Vermont",NA,2008
+"255","Wyoming",NA,2008
+"256","Alabama",100,2009
+"257","Florida",66,2009
+"258","Rhode Island",65,2009
+"259","New York",59,2009
+"260","Delaware",59,2009
+"261","Nevada",57,2009
+"262","New Jersey",54,2009
+"263","Louisiana",52,2009
+"264","District of Columbia",52,2009
+"265","Tennessee",50,2009
+"266","Connecticut",49,2009
+"267","Maryland",48,2009
+"268","South Carolina",47,2009
+"269","Texas",46,2009
+"270","Indiana",45,2009
+"271","North Carolina",44,2009
+"272","Georgia",43,2009
+"273","New Mexico",42,2009
+"274","Arkansas",41,2009
+"275","Massachusetts",41,2009
+"276","Kentucky",40,2009
+"277","Illinois",39,2009
+"278","Missouri",39,2009
+"279","Arizona",39,2009
+"280","Washington",37,2009
+"281","Ohio",36,2009
+"282","Pennsylvania",36,2009
+"283","Minnesota",34,2009
+"284","California",34,2009
+"285","Wisconsin",32,2009
+"286","Virginia",29,2009
+"287","Mississippi",29,2009
+"288","Michigan",27,2009
+"289","Kansas",26,2009
+"290","Colorado",25,2009
+"291","Utah",22,2009
+"292","Oklahoma",21,2009
+"293","Nebraska",20,2009
+"294","Iowa",18,2009
+"295","Oregon",15,2009
+"296","West Virginia",NA,2009
+"297","Hawaii",NA,2009
+"298","Wyoming",NA,2009
+"299","Maine",NA,2009
+"300","South Dakota",NA,2009
+"301","Alaska",NA,2009
+"302","Idaho",NA,2009
+"303","New Hampshire",NA,2009
+"304","Montana",NA,2009
+"305","North Dakota",NA,2009
+"306","Vermont",NA,2009
+"307","Delaware",100,2010
+"308","Louisiana",99,2010
+"309","Rhode Island",95,2010
+"310","Mississippi",83,2010
+"311","Florida",75,2010
+"312","Nevada",73,2010
+"313","New Jersey",59,2010
+"314","Texas",57,2010
+"315","Georgia",57,2010
+"316","Maryland",56,2010
+"317","New York",54,2010
+"318","North Carolina",54,2010
+"319","Tennessee",52,2010
+"320","New Mexico",50,2010
+"321","Connecticut",50,2010
+"322","District of Columbia",47,2010
+"323","Oregon",47,2010
+"324","Nebraska",46,2010
+"325","Alabama",45,2010
+"326","Arizona",43,2010
+"327","Kentucky",40,2010
+"328","Illinois",40,2010
+"329","Pennsylvania",37,2010
+"330","Washington",35,2010
+"331","Kansas",35,2010
+"332","Indiana",35,2010
+"333","Michigan",34,2010
+"334","California",34,2010
+"335","Massachusetts",34,2010
+"336","South Carolina",33,2010
+"337","Utah",32,2010
+"338","Oklahoma",29,2010
+"339","Virginia",28,2010
+"340","Missouri",26,2010
+"341","Ohio",25,2010
+"342","Colorado",25,2010
+"343","Arkansas",24,2010
+"344","Minnesota",23,2010
+"345","Iowa",21,2010
+"346","Wisconsin",17,2010
+"347","Idaho",NA,2010
+"348","South Dakota",NA,2010
+"349","North Dakota",NA,2010
+"350","Montana",NA,2010
+"351","Hawaii",NA,2010
+"352","West Virginia",NA,2010
+"353","New Hampshire",NA,2010
+"354","Maine",NA,2010
+"355","Vermont",NA,2010
+"356","Alaska",NA,2010
+"357","Wyoming",NA,2010
+"358","Maryland",100,2011
+"359","Delaware",96,2011
+"360","District of Columbia",90,2011
+"361","New York",87,2011
+"362","Florida",83,2011
+"363","Virginia",80,2011
+"364","Nevada",77,2011
+"365","Georgia",73,2011
+"366","Texas",68,2011
+"367","Mississippi",67,2011
+"368","Rhode Island",66,2011
+"369","Alabama",66,2011
+"370","Louisiana",65,2011
+"371","California",61,2011
+"372","New Jersey",60,2011
+"373","Arizona",59,2011
+"374","Oklahoma",58,2011
+"375","Pennsylvania",57,2011
+"376","Massachusetts",55,2011
+"377","North Carolina",51,2011
+"378","Illinois",46,2011
+"379","New Mexico",46,2011
+"380","Connecticut",46,2011
+"381","South Carolina",45,2011
+"382","Michigan",45,2011
+"383","Kansas",42,2011
+"384","Washington",41,2011
+"385","Ohio",40,2011
+"386","Minnesota",39,2011
+"387","Missouri",36,2011
+"388","Nebraska",34,2011
+"389","Indiana",32,2011
+"390","Tennessee",31,2011
+"391","Colorado",31,2011
+"392","Wisconsin",27,2011
+"393","Utah",26,2011
+"394","Arkansas",26,2011
+"395","Kentucky",24,2011
+"396","Oregon",21,2011
+"397","Iowa",16,2011
+"398","North Dakota",NA,2011
+"399","Hawaii",NA,2011
+"400","Wyoming",NA,2011
+"401","Idaho",NA,2011
+"402","Vermont",NA,2011
+"403","West Virginia",NA,2011
+"404","Maine",NA,2011
+"405","New Hampshire",NA,2011
+"406","Alaska",NA,2011
+"407","Montana",NA,2011
+"408","South Dakota",NA,2011
+"409","New York",100,2012
+"410","Mississippi",90,2012
+"411","District of Columbia",88,2012
+"412","Maryland",86,2012
+"413","Texas",81,2012
+"414","Georgia",80,2012
+"415","Florida",79,2012
+"416","Nevada",79,2012
+"417","North Carolina",77,2012
+"418","Delaware",76,2012
+"419","California",76,2012
+"420","Rhode Island",76,2012
+"421","New Jersey",75,2012
+"422","Connecticut",68,2012
+"423","Louisiana",65,2012
+"424","Alabama",61,2012
+"425","Arizona",59,2012
+"426","Virginia",58,2012
+"427","Pennsylvania",57,2012
+"428","Utah",55,2012
+"429","South Carolina",55,2012
+"430","New Mexico",55,2012
+"431","Illinois",51,2012
+"432","Massachusetts",48,2012
+"433","Missouri",48,2012
+"434","Minnesota",47,2012
+"435","Michigan",46,2012
+"436","Indiana",42,2012
+"437","Wisconsin",42,2012
+"438","Washington",37,2012
+"439","Colorado",36,2012
+"440","Arkansas",35,2012
+"441","Ohio",32,2012
+"442","Tennessee",32,2012
+"443","Oregon",31,2012
+"444","Kentucky",31,2012
+"445","Iowa",28,2012
+"446","Oklahoma",26,2012
+"447","Nebraska",26,2012
+"448","Kansas",19,2012
+"449","Wyoming",NA,2012
+"450","Hawaii",NA,2012
+"451","Idaho",NA,2012
+"452","Alaska",NA,2012
+"453","West Virginia",NA,2012
+"454","South Dakota",NA,2012
+"455","North Dakota",NA,2012
+"456","Vermont",NA,2012
+"457","Montana",NA,2012
+"458","Maine",NA,2012
+"459","New Hampshire",NA,2012
+"460","Maryland",100,2013
+"461","New York",100,2013
+"462","Georgia",89,2013
+"463","District of Columbia",86,2013
+"464","Louisiana",77,2013
+"465","Florida",77,2013
+"466","Texas",72,2013
+"467","New Jersey",72,2013
+"468","South Carolina",69,2013
+"469","Delaware",69,2013
+"470","California",69,2013
+"471","Nevada",66,2013
+"472","Mississippi",66,2013
+"473","Virginia",65,2013
+"474","Kansas",62,2013
+"475","North Carolina",61,2013
+"476","Massachusetts",61,2013
+"477","Illinois",60,2013
+"478","Rhode Island",58,2013
+"479","Michigan",56,2013
+"480","Arizona",54,2013
+"481","Connecticut",52,2013
+"482","Tennessee",50,2013
+"483","Missouri",48,2013
+"484","Alabama",48,2013
+"485","Ohio",46,2013
+"486","Oklahoma",45,2013
+"487","Colorado",44,2013
+"488","Pennsylvania",43,2013
+"489","Arkansas",42,2013
+"490","Washington",40,2013
+"491","Oregon",39,2013
+"492","New Mexico",38,2013
+"493","Minnesota",34,2013
+"494","Indiana",32,2013
+"495","Utah",30,2013
+"496","Kentucky",29,2013
+"497","Nebraska",29,2013
+"498","Wisconsin",28,2013
+"499","Iowa",27,2013
+"500","Hawaii",NA,2013
+"501","South Dakota",NA,2013
+"502","West Virginia",NA,2013
+"503","Montana",NA,2013
+"504","Wyoming",NA,2013
+"505","Idaho",NA,2013
+"506","New Hampshire",NA,2013
+"507","Vermont",NA,2013
+"508","North Dakota",NA,2013
+"509","Maine",NA,2013
+"510","Alaska",NA,2013
+"511","Georgia",100,2014
+"512","Maryland",95,2014
+"513","New York",89,2014
+"514","Florida",79,2014
+"515","Mississippi",78,2014
+"516","New Jersey",78,2014
+"517","District of Columbia",72,2014
+"518","California",72,2014
+"519","Louisiana",69,2014
+"520","Virginia",69,2014
+"521","South Carolina",69,2014
+"522","Nevada",68,2014
+"523","Alabama",66,2014
+"524","Kansas",66,2014
+"525","Texas",64,2014
+"526","Delaware",62,2014
+"527","Arizona",61,2014
+"528","Michigan",61,2014
+"529","Illinois",59,2014
+"530","North Carolina",58,2014
+"531","Pennsylvania",58,2014
+"532","Massachusetts",55,2014
+"533","Connecticut",54,2014
+"534","Kentucky",51,2014
+"535","New Mexico",50,2014
+"536","Tennessee",48,2014
+"537","Minnesota",48,2014
+"538","Colorado",46,2014
+"539","Ohio",43,2014
+"540","Missouri",42,2014
+"541","Iowa",42,2014
+"542","Rhode Island",41,2014
+"543","Oklahoma",40,2014
+"544","Nebraska",40,2014
+"545","Arkansas",38,2014
+"546","Washington",33,2014
+"547","Utah",29,2014
+"548","Wisconsin",28,2014
+"549","Indiana",26,2014
+"550","Oregon",21,2014
+"551","Hawaii",NA,2014
+"552","Wyoming",NA,2014
+"553","Alaska",NA,2014
+"554","West Virginia",NA,2014
+"555","South Dakota",NA,2014
+"556","Vermont",NA,2014
+"557","New Hampshire",NA,2014
+"558","Idaho",NA,2014
+"559","North Dakota",NA,2014
+"560","Montana",NA,2014
+"561","Maine",NA,2014
+"562","New York",100,2015
+"563","Mississippi",92,2015
+"564","Maryland",86,2015
+"565","Georgia",83,2015
+"566","Delaware",80,2015
+"567","Florida",78,2015
+"568","New Jersey",76,2015
+"569","Nevada",76,2015
+"570","District of Columbia",76,2015
+"571","Alabama",71,2015
+"572","California",69,2015
+"573","Texas",68,2015
+"574","North Carolina",62,2015
+"575","Pennsylvania",59,2015
+"576","Louisiana",59,2015
+"577","Michigan",58,2015
+"578","Connecticut",58,2015
+"579","Massachusetts",57,2015
+"580","South Carolina",57,2015
+"581","Illinois",57,2015
+"582","Virginia",56,2015
+"583","Washington",55,2015
+"584","Nebraska",54,2015
+"585","Tennessee",54,2015
+"586","Arizona",52,2015
+"587","Arkansas",50,2015
+"588","Kentucky",49,2015
+"589","Rhode Island",48,2015
+"590","Kansas",45,2015
+"591","Oklahoma",44,2015
+"592","Indiana",43,2015
+"593","Missouri",43,2015
+"594","Colorado",40,2015
+"595","Minnesota",39,2015
+"596","Utah",38,2015
+"597","New Mexico",37,2015
+"598","Ohio",36,2015
+"599","Oregon",34,2015
+"600","Iowa",24,2015
+"601","Wisconsin",21,2015
+"602","North Dakota",NA,2015
+"603","Hawaii",NA,2015
+"604","South Dakota",NA,2015
+"605","Maine",NA,2015
+"606","Idaho",NA,2015
+"607","Alaska",NA,2015
+"608","Vermont",NA,2015
+"609","New Hampshire",NA,2015
+"610","West Virginia",NA,2015
+"611","Montana",NA,2015
+"612","Wyoming",NA,2015
+"613","Maryland",100,2016
+"614","Louisiana",100,2016
+"615","Georgia",99,2016
+"616","Delaware",93,2016
+"617","New York",89,2016
+"618","District of Columbia",87,2016
+"619","Alabama",75,2016
+"620","Florida",74,2016
+"621","Mississippi",72,2016
+"622","New Jersey",70,2016
+"623","North Carolina",70,2016
+"624","Texas",69,2016
+"625","Virginia",66,2016
+"626","California",65,2016
+"627","South Carolina",65,2016
+"628","Arkansas",62,2016
+"629","Tennessee",60,2016
+"630","Michigan",59,2016
+"631","Connecticut",58,2016
+"632","Nevada",58,2016
+"633","Massachusetts",56,2016
+"634","Pennsylvania",55,2016
+"635","Nebraska",54,2016
+"636","Arizona",54,2016
+"637","Rhode Island",54,2016
+"638","Illinois",54,2016
+"639","Indiana",51,2016
+"640","Ohio",50,2016
+"641","Kentucky",45,2016
+"642","Missouri",44,2016
+"643","Kansas",42,2016
+"644","Minnesota",41,2016
+"645","Oklahoma",41,2016
+"646","Washington",39,2016
+"647","Colorado",38,2016
+"648","Oregon",35,2016
+"649","Wisconsin",33,2016
+"650","Utah",29,2016
+"651","New Mexico",28,2016
+"652","Iowa",23,2016
+"653","Alaska",NA,2016
+"654","Vermont",NA,2016
+"655","Hawaii",NA,2016
+"656","Wyoming",NA,2016
+"657","North Dakota",NA,2016
+"658","Montana",NA,2016
+"659","South Dakota",NA,2016
+"660","New Hampshire",NA,2016
+"661","Maine",NA,2016
+"662","West Virginia",NA,2016
+"663","Idaho",NA,2016
+"664","Maryland",100,2017
+"665","New York",92,2017
+"666","Mississippi",91,2017
+"667","Georgia",84,2017
+"668","Louisiana",80,2017
+"669","Florida",77,2017
+"670","District of Columbia",74,2017
+"671","California",70,2017
+"672","New Jersey",70,2017
+"673","Rhode Island",69,2017
+"674","Texas",66,2017
+"675","South Carolina",65,2017
+"676","Arizona",64,2017
+"677","Virginia",60,2017
+"678","Arkansas",60,2017
+"679","Nevada",60,2017
+"680","Alabama",58,2017
+"681","Massachusetts",56,2017
+"682","North Carolina",56,2017
+"683","Pennsylvania",55,2017
+"684","Illinois",55,2017
+"685","Michigan",51,2017
+"686","Oklahoma",50,2017
+"687","Ohio",48,2017
+"688","Tennessee",48,2017
+"689","Connecticut",46,2017
+"690","Missouri",46,2017
+"691","Oregon",44,2017
+"692","Delaware",41,2017
+"693","Iowa",41,2017
+"694","Kentucky",41,2017
+"695","Indiana",40,2017
+"696","Minnesota",40,2017
+"697","Kansas",39,2017
+"698","Washington",38,2017
+"699","Wisconsin",34,2017
+"700","New Mexico",32,2017
+"701","Nebraska",29,2017
+"702","Utah",28,2017
+"703","Colorado",26,2017
+"704","Hawaii",NA,2017
+"705","Alaska",NA,2017
+"706","South Dakota",NA,2017
+"707","North Dakota",NA,2017
+"708","Vermont",NA,2017
+"709","West Virginia",NA,2017
+"710","Wyoming",NA,2017
+"711","Montana",NA,2017
+"712","Idaho",NA,2017
+"713","New Hampshire",NA,2017
+"714","Maine",NA,2017
+"715","District of Columbia",100,2018
+"716","New York",97,2018
+"717","Louisiana",95,2018
+"718","Georgia",92,2018
+"719","Maryland",88,2018
+"720","Mississippi",87,2018
+"721","Florida",83,2018
+"722","Delaware",79,2018
+"723","Nevada",79,2018
+"724","Texas",74,2018
+"725","Arkansas",71,2018
+"726","California",70,2018
+"727","Arizona",69,2018
+"728","Virginia",69,2018
+"729","New Jersey",67,2018
+"730","Pennsylvania",66,2018
+"731","North Carolina",65,2018
+"732","Connecticut",63,2018
+"733","Michigan",61,2018
+"734","Illinois",57,2018
+"735","Massachusetts",57,2018
+"736","New Mexico",56,2018
+"737","Tennessee",54,2018
+"738","South Carolina",52,2018
+"739","Alabama",51,2018
+"740","Ohio",50,2018
+"741","Indiana",50,2018
+"742","Minnesota",47,2018
+"743","Kansas",42,2018
+"744","Rhode Island",41,2018
+"745","Utah",40,2018
+"746","Colorado",40,2018
+"747","Oklahoma",39,2018
+"748","Washington",39,2018
+"749","Missouri",36,2018
+"750","Oregon",33,2018
+"751","Kentucky",31,2018
+"752","Iowa",31,2018
+"753","Nebraska",30,2018
+"754","Wisconsin",29,2018
+"755","Hawaii",NA,2018
+"756","Alaska",NA,2018
+"757","North Dakota",NA,2018
+"758","Montana",NA,2018
+"759","South Dakota",NA,2018
+"760","West Virginia",NA,2018
+"761","New Hampshire",NA,2018
+"762","Maine",NA,2018
+"763","Idaho",NA,2018
+"764","Vermont",NA,2018
+"765","Wyoming",NA,2018
+"766","New York",100,2019
+"767","Maryland",92,2019
+"768","Nevada",91,2019
+"769","Mississippi",87,2019
+"770","Georgia",86,2019
+"771","District of Columbia",86,2019
+"772","Louisiana",78,2019
+"773","Florida",78,2019
+"774","New Jersey",77,2019
+"775","Delaware",73,2019
+"776","Connecticut",73,2019
+"777","Virginia",71,2019
+"778","Texas",71,2019
+"779","New Mexico",67,2019
+"780","California",67,2019
+"781","Arkansas",67,2019
+"782","North Carolina",66,2019
+"783","Alabama",66,2019
+"784","Illinois",60,2019
+"785","Minnesota",59,2019
+"786","Arizona",59,2019
+"787","South Carolina",56,2019
+"788","Tennessee",55,2019
+"789","Ohio",52,2019
+"790","Pennsylvania",51,2019
+"791","Michigan",48,2019
+"792","Kentucky",47,2019
+"793","Utah",46,2019
+"794","Oregon",45,2019
+"795","Colorado",45,2019
+"796","Kansas",45,2019
+"797","Wisconsin",43,2019
+"798","Massachusetts",42,2019
+"799","Missouri",41,2019
+"800","Rhode Island",40,2019
+"801","Indiana",34,2019
+"802","Washington",29,2019
+"803","Nebraska",29,2019
+"804","Iowa",27,2019
+"805","Oklahoma",25,2019
+"806","Alaska",NA,2019
+"807","Wyoming",NA,2019
+"808","Maine",NA,2019
+"809","Hawaii",NA,2019
+"810","South Dakota",NA,2019
+"811","North Dakota",NA,2019
+"812","West Virginia",NA,2019
+"813","New Hampshire",NA,2019
+"814","Idaho",NA,2019
+"815","Vermont",NA,2019
+"816","Montana",NA,2019

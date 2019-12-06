@@ -1,0 +1,319 @@
+setwd("~/DesktopFiles/GtrendData")
+knitr::opts_chunk$set(echo = TRUE)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKBR
+SKBR<- SKBR[-1,]
+SKBR
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKBR<- SKBR[-2,]
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+head(SKBR)
+head(SKBR)
+SKBR<- SKBR[-1,]
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKLR<- read.csv("SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+head(SKLR)
+SKLR<- SKLR[-1,]
+head(SKLR)
+SKLR<- read.csv("SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+head(SKLR)
+SKBR<- data.frame(SKBR)
+SKBR<- SKBR[-1,]
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKLR<- read.csv("SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+head(SKLR)
+SKBLR<- merge(SKBR,SKLR, by="Region", sort = T)
+head(SKBR)
+colnames(SKBR)<- C("Region","RSF")
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = F)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = T)
+colnames(SKBR)<- C("Region","RSF")
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = T, sep = ",", stringsAsFactors = T)
+head(SKBR)
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = T)
+head(SKBR)
+SKBR<- SKBR[c(-1,-2),]
+head(SKBR)
+colnames(SKBR)<- C("Region","RSF")
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F)
+SKBR<- SKBR[c(-1,-2),]
+colnames(SKBR)<- C("Region","RSF")
+SKBR<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F)
+SKBR<- SKBR[c(-1,-2),]
+head(SKBR)
+colnames(SKBR)<- C("Region","RSF")
+head(SKBR)
+colnames(SKBR)<- C("Region","RSF")
+colnames(SKBR)<- c("Region","RSF")
+head(SKBR)
+SKBR$RSF<- as.numeric(SKBR$RSF)
+head(SKBR)
+SKLR<- read.csv("SkinLighteningRegion0419.csv", header = F, sep = ",", stringsAsFactors = F)
+head(SKLR)
+SKLR<- SKLR[c(-1,-2),]
+colnames(SKLR)<- c("Region", "RSF")
+head(SKLR)
+SKLR$RSF<- as.numeric(SKLR$RSF)
+head(SKLR)
+SKBLR<- merge(SKBR,SKLR, by="Region", sort = T)
+head(SKLR)
+library(maps)
+install.packages(c("maps","tidyverse","dplyr"))
+install.packages(c("maps", "tidyverse", "dplyr"))
+install.packages(c("maps", "tidyverse", "dplyr"))
+install.packages(c("maps", "tidyverse", "dplyr"))
+install.packages(c("maps", "tidyverse", "dplyr"))
+install.packages(c("maps", "tidyverse", "dplyr"))
+setwd("~/DesktopFiles/GtrendData")
+knitr::opts_chunk$set(echo = TRUE)
+#Stionarity, infer properties of a process
+sbt<- read.csv("SkinBleachingTime0419.csv", header = T, stringsAsFactors = F, sep = ",", col.names = c("Month","RSF"))
+sbt<- sbt[-1,]
+sbt$RSF<- as.numeric(sbt$RSF)
+head(sbt)
+#creating a time series object
+sbts<-ts(sbt$RSF)
+class(sbts)
+sbts
+acf(sbts, lag.max = 24)
+acf(diff(sbts))
+acf(sbts, lag.max = 24, type = "autocovariance")
+acf(sbts, lag.max = 24, type = "covariance")
+acf(diff(sbts), type = "covariance")
+autoplot(diff(sbts))
+library(tseries)
+autoplot(diff(sbts))
+autoplot(diff(sbts))
+trend.test(diff(sbts))
+library(pastecs)
+trend.test(diff(sbts))
+trend.test(sbts)
+trend.test(sbts, R=1)
+trend.test(sbts, R=2)
+trend.test(sbts, R=10)
+trend.test(sbts, R=100)
+p<- trend.test(sbts, R=100)
+p
+p$p.value
+plot(p)
+p<- trend.test(sbts)
+p$p.value
+plot(p)
+p
+2+(0.5*2^2)+(0.5*2^2)
+(0.5^2)/1.5
+1/1.5
+knitr::opts_chunk$set(echo = TRUE)
+#skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- skBT[-1,]
+skBT$RSF<- as.numeric(skBT$RSF)
+skBT
+head(skBT)
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+setwd("~/DesktopFiles/GtrendData")
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv("SkinBRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+setwd("~/DesktopFiles/GtrendData")
+skbr<- read.csv("SkinBRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv("SkinBRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("SkinLRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("\users17\users17$\lawres13\Data\Personal\DesktopFiles\GtrendData\SkinBRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("/users17/users17$/lawres13/Data/Personal/DesktopFiles/GtrendData/SkinLRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("/users17/users17$/lawres13/Data/Personal/DesktopFiles/GtrendData/SkinBRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("/users17/users17$/lawres13/Data/Personal/DesktopFiles/GtrendData/SkinLRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+setwd("~/DesktopFiles")
+sklr<- read.csv("SkinLRegion0419", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+library(readr)
+dataset <- read_csv(NULL)
+View(dataset)
+library(readr)
+SkinBRegion0419 <- read_csv("~/DesktopFiles/SkinBRegion0419.csv")
+View(SkinBRegion0419)
+skbr<- SkinBRegion0419
+skbr
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = "/", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+setwd("~/DesktopFiles/GtrendData")
+setwd("~/DesktopFiles/GtrendData")
+skbr<- read.csv("SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv(file="\\users17\users17$\lawres13\Data\Personal\DesktopFiles\GtrendData\SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv(file="\users17\users17$\lawres13\Data\Personal\DesktopFiles\GtrendData\SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv(file="H:\Personal\DesktopFiles\GtrendData\SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr<- read.csv(file="H:/Personal/DesktopFiles/GtrendData/SkinBleachingRegion0419.csv", header = F, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+skbr
+skbr<- skbr[c(-1,-2),]
+skbr$RSF<- as.numeric(skbr$RSF)
+head(skbr)
+sklr<- read.csv("SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinLighteningRegion0419.csv", header = T, sep = ",", stringsAsFactors = F,col.names = c("Region","RSF"))
+sklr<- sklr[-1,]
+sklr$RSF<- as.numeric(sklr$RSF)
+sklr
+skblr<- merge(skbr,sklr, by = "Region", sort = T)
+colnames(skblr)<- c("Region","Bleaching","Lightening")
+skblr
+skblr.naomit<- na.omit(skblr)
+skblr
+skblr.naomit
+skblr.naomit$aveRSF<- (skblr.naomit$Bleaching + skblr.naomit$Lightening)/2
+skblr.naomit
+skblr.ave<- skblr.naomit[,c(1,4)]
+skblr.ave
+summary(skblr.ave$aveRSF)
+#Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 29.50   43.75   56.75   58.21   72.38  100.00
+skblr.ave<- skblr.ave[order(-skblr.ave$aveRSF),]
+skblr.ave
+skblr.3qt<- Skblr.ave[skblr.ave$aveRSF>=72.38,]
+skblr.3qt<- skblr.ave[skblr.ave$aveRSF>=72.38,]
+skblr.3qt
+#21	Maryland	100.0
+#33	New York	96.5
+#11	Georgia	92.5
+#10	Florida	83.0
+#25	Mississippi	82.5
+#9	District of Columbia	76.0
+#31	New Jersey	76.0
+#44	Texas	73.0
+#5	California	72.5
+#29	Nevada	72.5
+skblr.3qt$nonWPop<-c(100-50.5,100-55.4	,100-52.4	,100-53.5	,100-56.5	,100-37.1	,100-54.9	,100-41.5	,100-36.8	,100-48.7)
+skblr.3qt
+skblr.nwpop<- skblr.3qt[order(-skblr.3qt$nonWPop),]
+skblr.nwpop
+year<- read.csv("year.csv", header = T, stringsAsFactors = F, sep =",")
+skbm<- as_tibble(skbr)
+library(tidyverse)
+library(tidyverse)
+skbm<- as_tibb
+install.packages(dplyr)
+library(dplyr)
+skbm<- as_tibble(skbr)
+skbm<- skbm%>%dplyr::mutate(region=stringr::str_to_lower(location))
+skbm<- as_tibble(skbr$RSF)
+skbm<- skbm%>%dplyr::mutate(region=stringr::str_to_lower(location))
+skbm<- as_tibble(skbr)
+skbm<- skbm%>%dplyr::mutate(region=stringr::str_to_lower(location))
+skbm<- skbm%>%dplyr::mutate(region=stringr::str_to_lower(Region))
+sMap<- ggplot2::map_data("state")
+skbmm<- merge(sMap, skbm, by = 'region')
+skbmm<- skbm%>% dplyr::left_join(x=., y = sMap, by ='region')
+theme1<- function() {
+theme_bw() +
+theme(panel.background = element_blank()) +
+theme(plot.background = element_rect(fill = "seashell")) +
+theme(panel.border = element_blank()) +                     # facet border
+theme(strip.background = element_blank()) +                 # facet title background
+theme(plot.margin = unit(c(.5, .5, .5, .5), "cm")) +
+theme(panel.spacing = unit(3, "lines")) +
+theme(panel.grid.major = element_blank()) +
+theme(panel.grid.minor = element_blank()) +
+theme(legend.background = element_blank()) +
+theme(legend.key = element_blank()) +
+theme(legend.title = element_blank())
+}
+theme2 <- function(){
+theme1()+
+theme(axis.title = element_blank())+
+theme(axis.text = element_blank())+
+theme(axis.ticks = element_blank())
+}
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(hits))), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+plot(skbmm)+theme1
+plot(skbr)+theme1
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(hits)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RFS)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RSF)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+table(skblr.nwpop)
+table(skblr)
+Print(skblr.nwpop)
+print(skblr.nwpop)
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RSF)), colour = 'red')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RSF)), colour = 'black')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RSF)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat))+ geom_polygon(aes(group = group, fill = log(RSF),col="red"), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+skbmm%>% ggplot(aes(x=long, y = lat), col="red")+ geom_polygon(aes(group = group, fill = log(RSF)), colour = 'white')+theme2()+ggtitle("Skin Bleaching and Skin Lightening by Region")
+#######################################
+hist(SKBLT.p$aveRSF)
+skblr
+skblr.ave
+#######################################
+hist(skblr.ave$aveRSF)
+trend.test(skblr.ave[,2])
+acf(skblr.ave)
+acf(skblr.ave$aveRSF)
+skblr.ts<-ts(skblr.ave$aveRSF)
+acf(skblr.ts)
+acf(skblr.ts, lag.max = 48)
+#skBT<- read.csv("SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("Time","RSF"))
+skBT<- skBT[-1,]
+skBT$RSF<- as.numeric(skBT$RSF)
+skBT
+head(skBT)
+skLT<- read.csv("H:/Personal/DesktopFiles/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",", stringsAsFactors = F, col.names = c("Time","RSF"))
+skLT<- skLT[-1,]
+skLT$RSF<- as.numeric(skLT$RSF)
+SKBLT<- merge(skBT, skLT, by = "Time", sort = T)
+colnames(SKBLT)<- c("Date","Bleaching", "Lightening")
+SKBLT$aveRSF<- (SKBLT$Bleaching+SKBLT$Lightening)/2
+SKBLT
+SKBLT.p<- SKBLT[,c(1,4)]
+SKBLT.p<- ts(SKBLT.p)
+#x axis is in number of months equal to 174 months
+plot(SKBLT.p$aveRSF, type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")
+#x axis is in number of months equal to 174 months
+plot(SKBLT.p , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")
+#SKBLT.p<- SKBLT[,c(1,4)]
+#x axis is in number of months equal to 174 months
+#plot(SKBLT.p$aveRSF, type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")
+SKBLT.p
+SKBLT.p<- SKBLT[,c(1,4)]
+SKBLT.ts<- ts(SKBLT.p$aveRSF)
+#x axis is in number of months equal to 174 months
+plot(SKBLT.ts , type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")
+#SKBLT.p<- SKBLT[,c(1,4)]
+#x axis is in number of months equal to 174 months
+#plot(SKBLT.p$aveRSF, type = "o", main = "SKin Bleaching and Lightening Trend from 2004 To 2019", xlab = "Months: 0 = 2004-01, 186 = 2019-06", ylab = "Relative Search Popularity")
+SKBLT.p
+library(tseries)
+library(DataCombine)
+SKBLT.pc<-PercChange(SKBLT.p, Var = "aveRSF", slideBy = -1)
+SKBLT.pc
+summary(SKBLT.pc$`aveRSF_PChangeFrom-1`)
+library(forecast)
+trend.test(skblr.p[,2])
+#######################################
+hist(skblr.ts)
+trend.test(skblr.ts)
+skblr.ts
+trend.test(SKBLT.ts)
+SKBLT.ts
+acf(SKBLT.ts, lag.max = 48)
+acf(SKBLT.ts, lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019")
+acf(SKBLT.ts, lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019")
+# to correct for serial correlation
+acf(diff(SKBLT.ts), lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019")
+# to correct for serial correlation
+(acf(diff(SKBLT.ts), lag.max = 48, main= "Correlogram of SBL Searchs from 2004 - 2019"))
+#data:  SKBLT.p[, 2] and time(SKBLT.p[, 2])
+#S = 224180, p-value < 2.2e-16
+#alternative hypothesis: true rho is not equal to 0
+#sample estimates:
+#      rho
+#0.7909619
+trend.skblt<- trend.test(SKBLT.ts)
+plot(trend.skblt)
+trend.skblt$p.value
+trend.skblt
+trend.skblt2<- trend.test(diff(SKBLT.ts))
+trend.skblt2

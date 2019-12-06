@@ -1,0 +1,290 @@
+---
+title: "SkinBleaching"
+author: "Steven Lawrence"
+date: "November 8, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+###Packages Used
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tseries)
+library(DataCombine)
+library(forecast)
+library(pastecs)
+library(gridExtra)
+library(ggpubr)
+```
+#Skin Bleaching Time Series Analysis
+
+##Distribution
+
+Here I am loading in the data.  This dataset contains information for years 2004 - 2019, however only 2008 onward will be analyzed.
+
+```{r Skin Bleaching Temoral Datasets, message=FALSE, echo=FALSE, warning=FALSE}
+
+skbt<- read.csv("./data/GtrendData/SkinBleachingTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
+
+skbt<- skbt[-1,] %>% 
+ mutate(rsv = as.numeric(rsv))
+
+sklt<- read.csv("./data/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
+
+sklt<- sklt[-1,] %>% 
+ mutate(rsv = as.numeric(rsv))
+
+
+
+```
+
+```{r, message=F, warning=F}
+
+skbt %>%
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+  ggplot(aes(x = rsv))+geom_density()
+
+
+```
+
+```{r, eval=FALSE, message=F, warning=F}
+
+skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year)
+    ) %>% 
+  pivot_wider(
+    names_from = month,
+    values_from  = rsv
+  ) %>%
+    as_tibble() 
+```
+
+```{r, message=F, warning=F}
+ 
+skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>% 
+   ggplot(aes(x = month, y = rsv))+
+   geom_violin()+
+   ggtitle("Mean Score By Month")
+
+
+
+```
+
+Plotting the temporal trend
+
+```{r, message=F, warning=F}
+b0<- skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  pull(rsv) %>% 
+  ts() %>% 
+  autoplot(
+   
+    main = "SKin Bleaching Trend from 2004 To 2019", 
+    xlab = "Months", 
+    ylab = "Relative Search Volume") 
+
+b1<- skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  ggplot(aes(x=month, y= rsv#, group = year
+             ))+geom_line()+labs(title = "no group")
+
+b2<-skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  ggplot(aes(x=month, y= rsv, group = year))+geom_line()+labs(title = "Grouped by year")
+
+ggarrange(b0,b2,b1, widths = c(2,1.5))
+
+```
+
+
+```{r, message=F, warning=F}
+skbt %>% 
+  rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+  PercChange( Var = "rsv", slideBy = -1) %>% 
+  summary() %>% 
+  knitr::kable()
+
+
+```
+
+```{r, message=F, warning=F}
+skbt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+  
+  pull(rsv) %>% 
+  na.omit() %>% 
+  ts(frequency = 12) %>% 
+  stl( s.window = "periodic") %>% 
+plot()
+
+
+```
+
+
+
+```{r, message=F, warning=F}
+skbt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+  pull(rsv) %>% 
+  ggAcf()
+
+ skbt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+   pull(rsv) %>% 
+  ts() %>%  
+  pastecs::trend.test(R = 1) %>% 
+   broom::tidy() %>% 
+   select(method, estimate, p.value) %>% 
+   rename("r" = estimate) %>% 
+   knitr::kable()
+
+
+```
+
+
+
+```{r}
+p1<- skbt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  filter(year >= 2008) %>% 
+  pull(rsv) %>% 
+  na.omit() %>% 
+  ts(frequency = 12) %>% 
+  stl( s.window = "periodic") %>% 
+  seasadj() %>% 
+  ggsubseriesplot(main = "Skin Bleaching")
+
+p2<- sklt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  #filter(year >= 2008) %>% 
+  pull(rsv) %>% 
+  na.omit() %>% 
+  ts(frequency = 12) %>% 
+  stl( s.window = "periodic") %>% 
+  seasadj() %>% 
+  ggsubseriesplot(main ="Skin Lightening")
+
+skblt <- left_join(skbt,sklt, by = "time") %>% 
+  mutate(rsv = (rsv.x + rsv.y) /2) %>% 
+  select(time, rsv)
+
+
+p3<-skblt %>% rename(
+    date = time) %>% 
+  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month = month.abb[month],
+    year = as.numeric(year),
+    month = as.factor(month)) %>%
+  arrange(year) %>% 
+  #filter(year >= 2008) %>% 
+  pull(rsv) %>% 
+  na.omit() %>% 
+  ts(frequency = 12) %>% 
+  stl( s.window = "periodic") %>% 
+  seasadj() %>% 
+  ggsubseriesplot(main = "merged")
+
+ggarrange(p3,p1,p2)
+```
+
+#Skin Bleaching Regional Analysis
+
+
+```{r}
+
+```
