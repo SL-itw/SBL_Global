@@ -16,7 +16,6 @@ library(DataCombine)
 library(forecast)
 library(pastecs)
 library(gridExtra)
-library(ggpubr)
 ```
 #Skin Bleaching Time Series Analysis
 
@@ -31,17 +30,11 @@ skbt<- read.csv("./data/GtrendData/SkinBleachingTime0419.csv", header = T, sep =
 skbt<- skbt[-1,] %>% 
  mutate(rsv = as.numeric(rsv))
 
-sklt<- read.csv("./data/GtrendData/SkinLighteningTime0419.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
-
-sklt<- sklt[-1,] %>% 
- mutate(rsv = as.numeric(rsv))
-
-
-
+skbt %>% head()
 ```
 
 ```{r, message=F, warning=F}
-
+#separating the time variable into year and month
 skbt %>%
   rename(
     date = time) %>% 

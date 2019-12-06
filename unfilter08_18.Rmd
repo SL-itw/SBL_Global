@@ -2,7 +2,11 @@
 title: "unFiltered"
 author: "Steven Lawrence"
 date: "November 18, 2019"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -34,25 +38,24 @@ Here I am loading in the data.  This dataset contains information for years 2004
 skbt<- read.csv("./data/GtrendData/bleachingTime08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
 
 skbt<- skbt[-1,] %>% 
- mutate(rsv = as.numeric(rsv))
+ mutate(rsv = as.numeric(rsv)) %>% 
+  rename(
+    date = time) %>% 
+    separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+  mutate(
+    month = as.numeric(month),
+    month_name = month.abb[month],
+    year_f = as.factor(year),
+    month_name = as.factor(month_name)) %>%
+  arrange(year)
 
 ```
 
 ```{r, message=F, warning=F}
 
 skbt %>%
-  rename(
-    date = time) %>% 
-    separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  filter(year >= 2008) %>% 
-  replace_na(rsv, 0) %>% 
-  ggplot(aes(x = rsv))+geom_histogram()
+  
+  ggplot(aes(x = rsv))+geom_histogram()+labs(title = "Distribution of Relative Search Volume between 2008 - 2018")
 
 
 ```
@@ -60,16 +63,8 @@ skbt %>%
 ```{r, eval=FALSE, message=F, warning=F}
 
 skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year)
-    ) %>% 
   pivot_wider(
-    names_from = month,
+    names_from = month_name,
     values_from  = rsv
   ) %>%
     as_tibble() 
@@ -77,18 +72,10 @@ skbt %>%
 
 ```{r, message=F, warning=F}
  
-skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>% 
-   ggplot(aes(x = month, y = rsv))+
+skbt  %>% 
+   ggplot(aes(x = month_name, y = rsv))+
    geom_violin()+
-   ggtitle("Mean Score By Month")
+   ggtitle("Distibution of Relative Search Volume By Month for years 2008 - 2018")
 
 
 
@@ -97,63 +84,39 @@ skbt %>%
 Plotting the temporal trend
 
 ```{r, message=F, warning=F}
-b0<- skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+
+
+
+b0<- skbt  %>%
   mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  pull(rsv) %>% 
-  ts() %>% 
-  autoplot(
-   
-    main = "SKin Bleaching Trend from 2004 To 2019", 
-    xlab = "Months", 
-    ylab = "Relative Search Volume") 
+         month_name  = forcats::fct_relevel(month_name, "Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"),
+         month_cont = c(1:132)) %>% 
+  ggplot(aes(x = month_cont, y = rsv, col = year_f))+geom_line()+
+ labs(
+    title = "SKin Bleaching Trend from 2004 To 2018", 
+    x = "Months", 
+    y = "Relative Search Volume"
+    ) +
+  scale_fill_viridis_d(option = "A", aesthetics = "col")+theme(legend.position = "bottom")
 
 b1<- skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  ggplot(aes(x=month, y= rsv#, group = year
-             ))+geom_line()+labs(title = "no group")
+  ggplot(aes(x=month_name, y= rsv, col = year_f, group = year
+             ))+geom_line()+
+  scale_fill_viridis_d(option = "A", aesthetics = "col")+
+  labs(title = "Seasonal Plot of Relative Search Volume for years 2008 - 2018")+theme(legend.position = "bottom")
 
-b2<-skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  ggplot(aes(x=month, y= rsv, group = year))+geom_line()+labs(title = "Grouped by year")
 
-ggarrange(b0,b2,b1, widths = c(2,1.5))
+ggarrange(b0,b1, 
+          #widths = c(2,3), 
+          ncol = 2)
 
 ```
 
 
+
+
 ```{r, message=F, warning=F}
-skbt %>% 
-  rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  group_by(year) %>% #look at change by year | distribution by year | change in the median or mean by year
+skbt  %>% 
   PercChange( Var = "rsv", slideBy = -1) %>% 
   summary() %>% 
   knitr::kable()
@@ -162,19 +125,8 @@ skbt %>%
 ```
 
 ```{r, message=F, warning=F}
-skbt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  filter(year >= 2008) %>% 
-  
+skbt %>% 
   pull(rsv) %>% 
-  na.omit() %>% 
   ts(frequency = 12) %>% 
   stl( s.window = "periodic") %>% 
 plot()
@@ -185,29 +137,11 @@ plot()
 
 
 ```{r, message=F, warning=F}
-skbt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  filter(year >= 2008) %>% 
+skbt %>%
   pull(rsv) %>% 
   ggAcf()
 
- skbt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  filter(year >= 2008) %>% 
+ skbt %>%
    pull(rsv) %>% 
   ts() %>%  
   pastecs::trend.test(R = 1) %>% 
@@ -222,74 +156,31 @@ skbt %>% rename(
 
 
 ```{r}
- skbt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  #filter(year >= 2008) %>% 
+ skbt %>% 
   pull(rsv) %>% 
   na.omit() %>% 
   ts(frequency = 12) %>% 
-  stl( s.window = "periodic") #%>% 
-   #%>% 
-  
-  ts() %>% 
-  #seasadj() %>% 
+      stl( s.window = "periodic") %>% 
+  seasadj() %>% 
   ggsubseriesplot(main = "Skin Bleaching")
 
-```
-
-```{r, eval = FALSE}
-#p2<- sklt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  #filter(year >= 2008) %>% 
-  pull(rsv) %>% 
-  na.omit() %>% 
-  ts(frequency = 12) %>% 
-  stl( s.window = "periodic") %>% 
-  seasadj() %>% 
-  ggsubseriesplot(main ="Skin Lightening")
-
-#skblt <- left_join(skbt,sklt, by = "time") %>% 
-  mutate(rsv = (rsv.x + rsv.y) /2) %>% 
-  select(time, rsv)
-
-
-#p3<-skblt %>% rename(
-    date = time) %>% 
-  separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
-    month = as.numeric(month),
-    month = month.abb[month],
-    year = as.numeric(year),
-    month = as.factor(month)) %>%
-  arrange(year) %>% 
-  #filter(year >= 2008) %>% 
-  pull(rsv) %>% 
-  na.omit() %>% 
-  ts(frequency = 12) %>% 
-  stl( s.window = "periodic") %>% 
-  seasadj() %>% 
-  ggsubseriesplot(main = "merged")
-
-#ggarrange(p3,p1,p2)
 ```
 
 #Skin Bleaching Regional Analysis
 
 
 ```{r}
+skbr <- read.csv("./data/GtrendData/bleachingRegion08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("region","rsv"))
+
+skbr<- skbr[-1,] %>% 
+ mutate(rsv = as.numeric(rsv)) 
+
 
 ```
+
+```{r}
+skbr %>% 
+  mutate(rsv = recode(rsv, .missing = 0)) %>% 
+  ggplot(aes(x = rsv))+geom_histogram(bins = 30 )+labs(title = "Distribution of Regional Relative Search Intersts for year 2008 - 2018")
+```
+
