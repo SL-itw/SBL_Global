@@ -17,11 +17,9 @@ Loading Libraries
 
 ```{r Libraries, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(ggplot2)
 library(tseries)
 library(DataCombine)
 library(forecast)
-library(dplyr)
 library(knitr)
 library(pastecs)
 library(grid)
