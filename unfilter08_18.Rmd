@@ -8,12 +8,13 @@ output:
     toc: true
     toc_float: true
 ---
-###Packages Used
 
-```{r setup, include = FALSE, message = FALSE, warning = FALSE}
+#### Packages Used
+
+```{r setup , message = FALSE, warning = FALSE}
 
 # global default settings for chunks
-knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE,
+knitr::opts_chunk$set( eval = TRUE, warning = FALSE, message = FALSE,
                       fig.dim = c(6, 3)
                       )
 
@@ -35,17 +36,23 @@ theme_set(theme_minimal() +
                   plot.subtitle = element_text(hjust = 0.5, size = 8))
           )
 ```
-#Skin Bleaching Time Series Analysis
 
-##Distribution
+# Skin Bleaching Time Series Analysis
 
-Here I am loading in the data.  This dataset contains information for years 2004 - 2019, however only 2008 onward will be analyzed.
+### Distribution
+
+This dataset contains information for years 2004 - 2019, however only 2008 onward will be analyzed.
 
 ```{r Skin Bleaching Temoral Datasets, message=FALSE, warning=FALSE}
+#Here I am loading in the data.
 
 skbt<- read.csv("./data/GtrendData/bleachingTime08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
 
+#deleting first row that contains duplicate row name
+
 skbt<- skbt[-1,] %>% 
+
+#formating rows to correct class and separating time varaiable to year and month 
  mutate(rsv = as.numeric(rsv)) %>% 
   rename(
     date = time) %>% 
@@ -59,11 +66,16 @@ skbt<- skbt[-1,] %>%
 
 ```
 
+Relative search interest is right skewed.  Given that it is already on a relative scale it may be best leave it untransfromed for preliminary analysis. 
 ```{r, message=F, warning=F}
+
+
 
 skbt %>%
   
-  ggplot(aes(x = rsv))+geom_histogram()+labs(title = "Distribution of Relative Search Volume between 2008 - 2018")
+  ggplot(aes(x = rsv))+
+  geom_histogram()+
+  labs(title = "Distribution of Relative Search Volume between 2008 - 2018")
 
 
 ```
@@ -77,7 +89,7 @@ skbt %>%
   ) %>%
     as_tibble() 
 ```
-
+We are interested in understanding how the data changes overtime.  Here we see the distribution of RSV by month.  Very clearly we observe that their may be some seasonality where the highest RSV in every year may be in the summer months of June and July. 
 ```{r, message=F, warning=F}
  
 skbt  %>% 
@@ -89,9 +101,11 @@ skbt  %>%
 
 ```
 
-Plotting the temporal trend
+### Plotting the temporal trend
 
-```{r, message=F, warning=F}
+The temporal trend is both represented by year and month where the colors on both graphs correspond with the same year and month that the observation occured. Ex: The peak in 2009 from the trend plot is directly associated with the peak in month July from the seasonal plot. 
+
+```{r, message=F, warning=F, fig.dim= c(10,5)}
 
 
 
@@ -100,37 +114,38 @@ b0<- skbt  %>%
          month_name  = forcats::fct_relevel(month_name, "Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"),
          month_cont = c(1:132)) %>% 
   ggplot(aes(x = month_cont, y = rsv, col = year_f))+geom_line()+
- labs(
+  scale_fill_viridis_d(option = "A", aesthetics = "col", name = "Year Color")+theme(legend.position = "bottom", axis.text.x = element_blank())+
+  labs(
     title = "SKin Bleaching Trend from 2004 To 2018", 
-    x = "Months", 
+    x = "Year", 
     y = "Relative Search Volume"
-    ) +
-  scale_fill_viridis_d(option = "A", aesthetics = "col")+theme(legend.position = "bottom")
+    ) 
 
 b1<- skbt %>% 
   ggplot(aes(x=month_name, y= rsv, col = year_f, group = year
              ))+geom_line()+
-  scale_fill_viridis_d(option = "A", aesthetics = "col")+
-  labs(title = "Seasonal Plot of Relative Search Volume for years 2008 - 2018")+theme(legend.position = "bottom")
+  scale_fill_viridis_d(option = "A", aesthetics = "col", name = "Year Color")+
+  labs(title = "Seasonal Plot of Relative Search Volume for years 2008 - 2018", x = " Month")+theme(legend.position = "bottom")
 
-
-ggarrange(b0,b1, 
-          #widths = c(2,3), 
-          ncol = 2)
+b0 + plot_layout(ncol = 2) +b1 
 
 ```
 
 
 
-
-```{r, message=F, warning=F}
+In trying to get an idea the percent change by month however I am having issues with the code. 
+```{r, message=F, warning=F, eval= FALSE}
 skbt  %>% 
-  PercChange( Var = "rsv", slideBy = -1) %>% 
+  group_by(year_f) %>% 
+  PercChange( Var = "rsv", slideBy = 1) %>% 
   summary() %>% 
   knitr::kable()
 
 
 ```
+
+Here we observe the decomposed form of the temporal data.  There seems to be an increasing trend and seasonal pattern.  
+
 
 ```{r, message=F, warning=F}
 skbt %>% 
@@ -142,7 +157,7 @@ plot()
 
 ```
 
-
+To statistically assess the data for a trend and seasonality we untilized the autocorellation function and produced a corelogram. In this plot we obaserve a positive test for a trend and seasonality being yearly.  In addition the spearman's rank correlation suggest a evidence of a trend p_value < 0.0001
 
 ```{r, message=F, warning=F}
 skbt %>%
@@ -161,39 +176,48 @@ skbt %>%
 
 ```
 
-
+-----This seasonal plot is still underconstruction----
 
 ```{r}
  skbt %>% 
   pull(rsv) %>% 
   na.omit() %>% 
-  ts(frequency = 12) %>% 
+  ts(start = 2008, deltat = 1/12, 
+   #  name = "year"
+     ) %>% 
       stl( s.window = "periodic") %>% 
   seasadj() %>% 
   ggsubseriesplot(main = "Skin Bleaching")
 
 ```
 
-#Skin Bleaching Regional Analysis
+# Skin Bleaching Regional Analysis
 
 
 ```{r}
+
+#Loading in the data
 skbr <- read.csv("./data/GtrendData/bleachingRegion08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("region","rsv"))
 
 skbr<- skbr[-1,] %>% 
+  
+  #removing duplicated column names
  mutate(rsv = as.numeric(rsv)) %>% 
   rename(state = region)
 
 
 ```
 
+### Distribution 
+
+The regional distribution is very odd. 
 ```{r}
 skbr %>% 
   mutate(rsv = recode(rsv, .missing = 0)) %>% 
   ggplot(aes(x = rsv))+geom_histogram(bins = 30 )+labs(title = "Distribution of Regional Relative Search Intersts for year 2008 - 2018")
 ```
 
-## Choropleth map
+### Choropleth map
 
 ```{r}
 
