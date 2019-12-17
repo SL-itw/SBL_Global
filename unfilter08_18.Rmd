@@ -14,18 +14,30 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ###Packages Used
 
-```{r, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(tseries)
-library(DataCombine)
-library(forecast)
-library(pastecs)
-library(gridExtra)
-library(ggpubr)
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 
-###Discussion#####
-### further research should look at sociodemographic projidles to identify populations at risk. 
-### Potencial selection bias. 
+# global default settings for chunks
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE,
+                      fig.dim = c(6, 3)
+                      )
+
+# loaded packages; placed here to be able to load global settings
+#install.packages(c("kableExtra", "patchwork","DescTools","tidyverse","tseries","DataCombine","forecast","plotly","ggpubr","gridExtra","pastecs"))
+#tinytex::install_tinytex()
+
+
+Packages <- c("tidyverse", "arsenal", "readxl", 
+              "patchwork", "GGally", "ghibli","plotly","ggpubr","gridExtra",
+              "pastecs","forecast","DataCombine","tseries","kableExtra","viridis")
+invisible(lapply(Packages, library, character.only = TRUE))
+
+
+# theme global setting for ggplot
+theme_set(theme_minimal() + 
+            theme(legend.position = "bottom") +
+            theme(plot.title = element_text(hjust = 0.5, size = 12),
+                  plot.subtitle = element_text(hjust = 0.5, size = 8))
+          )
 ```
 #Skin Bleaching Time Series Analysis
 
@@ -173,7 +185,8 @@ skbt %>%
 skbr <- read.csv("./data/GtrendData/bleachingRegion08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("region","rsv"))
 
 skbr<- skbr[-1,] %>% 
- mutate(rsv = as.numeric(rsv)) 
+ mutate(rsv = as.numeric(rsv)) %>% 
+  rename(state = region)
 
 
 ```
@@ -182,5 +195,46 @@ skbr<- skbr[-1,] %>%
 skbr %>% 
   mutate(rsv = recode(rsv, .missing = 0)) %>% 
   ggplot(aes(x = rsv))+geom_histogram(bins = 30 )+labs(title = "Distribution of Regional Relative Search Intersts for year 2008 - 2018")
+```
+
+## Choropleth map
+
+```{r}
+
+# used this data set to obtain state codes used in plotly to map according to state
+codes <- read_csv("https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv") %>% 
+  select(state, code)
+
+# give state boundaries a white border
+l <- list(color = toRGB("white"), width = 2)
+
+# specify some map projection/options
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+#merging both the codes and rsv together within ploty commands using left_join.
+p <- plot_geo(
+      #data set
+      left_join(codes, skbr, by = "state"), 
+      #map
+      locationmode = 'USA-states') %>%
+    add_trace(
+      z = ~rsv, 
+      #text = ~hover, 
+      locations = ~code,
+      color = ~rsv, colors = 'Purples'
+  ) %>%
+    colorbar(title = "Volume In Percentage") %>%
+    layout(
+      title = 'Relative Search Volume of <br> Skin Bleaching in The US 2008 - 2018',
+      geo = g
+  )
+
+p
+
 ```
 
