@@ -19,11 +19,15 @@ knitr::opts_chunk$set( eval = TRUE, warning = FALSE, message = FALSE,
                       )
 
 # loaded packages; placed here to be able to load global settings
-#install.packages(c("kableExtra", "patchwork","DescTools","tidyverse","tseries","DataCombine","forecast","plotly","ggpubr","gridExtra","pastecs","RColorBrewer"))
+#install.packages(c("kableExtra", "patchwork","DescTools","tidyverse","tseries","DataCombine","forecast","plotly","ggpubr","gridExtra","pastecs","RColorBrewer", "xts"))
+
 
 Packages <- c("tidyverse", "arsenal", "readxl", 
-              "patchwork", "GGally", "ghibli","plotly","ggpubr","gridExtra",
-              "pastecs","forecast","DataCombine","tseries","kableExtra","viridis","RColorBrewer")
+              "patchwork", "GGally", "ghibli",
+              "plotly","ggpubr","gridExtra",
+              "pastecs","forecast","DataCombine",
+              "tseries","kableExtra","viridis",
+              "RColorBrewer", "xts")
 invisible(lapply(Packages, library, character.only = TRUE))
 
 
@@ -91,6 +95,7 @@ We are interested in understanding how the data changes overtime.  Here we see t
 ```{r, message=F, warning=F}
  
 skbt  %>% 
+  mutate(month_name  = forcats::fct_relevel(month_name,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")) %>% 
    ggplot(aes(x = month_name, y = rsv))+
    geom_violin()+
    ggtitle("Distibution of Relative Search Volume By Month for years 2008 - 2018")
@@ -114,10 +119,10 @@ b0<- skbt  %>%
   ggplot(aes(x = month_cont, y = rsv, col = year_f))+geom_line()+
   scale_fill_viridis_d(option = "d", aesthetics = "col", name = "Year Color")+theme(legend.position = "bottom", axis.text.x = element_blank())+
   labs(
-    title = "SKin Bleaching Trend from 2004 To 2018", 
+    title = "SKin Bleaching Trend from 2008 To 2018", 
     x = "Year", 
     y = "Relative Search Volume"
-    ) 
+    ) + theme_minimal()
 
 b1<- skbt %>% 
   mutate(
@@ -126,7 +131,7 @@ b1<- skbt %>%
   ggplot(aes(x=month_name, y= rsv, col = year_f, group = year
              ))+geom_line()+
   scale_fill_viridis_d(option = "D", aesthetics = "col", name = "Year Color")+
-  labs(title = "Seasonal Plot of Relative Search Volume for years 2008 - 2018", x = " Month")+theme(legend.position = "bottom")
+  labs(title = "Seasonal Plot of Relative Search Volume for years 2008 - 2018", x = " Month", y="Relative Search Volume")+theme(legend.position = "bottom")+theme_minimal()
 
 b0 + plot_layout(ncol = 2) +b1 
 
@@ -136,20 +141,50 @@ b0 + plot_layout(ncol = 2) +b1
 
 In trying to get an idea the percent change by month however I am having issues with the code. 
 ```{r, message=F, warning=F}
-skbt  %>% 
-  PercChange( Var = "rsv", slideBy = 1, GroupVar = "year_f") %>% 
-  summary() %>% 
-  knitr::kable()
 
-skbt  %>% 
-  PercChange( Var = "rsv", slideBy = 1, GroupVar = "year_f") %>% ggpairs()
 
-skbt  %>% 
-  PercChange( Var = "rsv", slideBy = 1, GroupVar = "year_f") %>% 
-  ggplot(aes(x = year_f, y = `rsv_PChangeFrom1`))+
-  geom_boxplot()
+skbt %>%  
+  group_by(year) %>% 
+  summarize(
+    mean_rsv = mean(rsv, na.rm = T),
+    sd_rsv = sd(rsv),
+    med_rsv = median(rsv, na.rm = T)) %>% 
+  ggplot(aes(x =year, y=mean_rsv))+geom_point()+geom_smooth(formula = y ~ x + x^2, method = "auto", stat = "smooth")
+  
+skbt %>%  
+  group_by(year) %>% 
+  summarize(
+    mean_rsv = mean(rsv, na.rm = T),
+    sd_rsv = sd(rsv),
+    med_rsv = median(rsv, na.rm = T)) %>% 
+  mutate(
+    per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100,
+    per_change2 = (lead(mean_rsv)-mean_rsv[1])/mean_rsv[1]*100) %>% 
+  ggplot()+
+  geom_point(aes(x = year, y = per_change2, colour = "red"))+
+  geom_point(aes(x = year, y = per_change))
   
 
+skbt %>%  
+  group_by(year) %>% 
+  summarize(
+    mean_rsv = mean(rsv, na.rm = T),
+    sd_rsv = sd(rsv),
+    med_rsv = median(rsv, na.rm = T)) %>% 
+  mutate(
+    per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100,
+    per_change2 = (lead(mean_rsv)-mean_rsv[1])/mean_rsv[1]*100) %>% 
+  select(per_change, per_change2) %>% 
+  summary()
+
+#try using percent change function from email.
+#try to calculate the median of each year then do percent change. 
+#look at timeseries papers to see how to explain the results
+
+#summarize by year; median, IQR, with a line plot and dots. 
+#formatable table 
+
+#expand y axis to see more detail. 
 
 ```
 
