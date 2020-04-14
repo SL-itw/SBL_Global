@@ -2,7 +2,12 @@
 title: "Further_analysis"
 author: "Steven Lawrence"
 date: "4/1/2020"
-output: github_document
+output: 
+  html_document:
+    fig_caption: yes
+    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup , message = FALSE, warning = FALSE, include=F}
