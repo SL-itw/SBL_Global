@@ -10,12 +10,41 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ###Packages Used
 ```{r, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(tseries)
-library(DataCombine)
-library(forecast)
-library(pastecs)
-library(gridExtra)
+# global default settings for chunks
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE,
+                      fig.dim = c(6, 3), 
+                      fig.align = "center",
+                      results = "asis"
+                      )
+
+
+Packages <- c("tidyverse", "tseries", "DataCombine", "fpp3",
+              "tinytex", "scales", "knitr", "kableExtra",
+              "patchwork", "DescTools", "gridExtra", "forecast",
+              "GGally", "leaps", "modelr", "mgcv", "caret",
+              "ggpubr", "kableExtra", "formattable", "pastecs")
+
+
+invisible(lapply(Packages, library, character.only = TRUE))
+
+
+
+# global settings for color palettes
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+
+)
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+# theme global setting for ggplot
+theme_set(theme_minimal() + 
+            theme(legend.position = "bottom") +
+            theme(plot.title = element_text(hjust = 0.5, size = 12),
+                  plot.subtitle = element_text(hjust = 0.5, size = 8))
+          )
+
 ```
 #Skin Bleaching Time Series Analysis
 
@@ -30,7 +59,7 @@ skbt<- read.csv("./data/GtrendData/SkinBleachingTime0419.csv", header = T, sep =
 skbt<- skbt[-1,] %>% 
  mutate(rsv = as.numeric(rsv))
 
-skbt %>% head()
+#skbt %>% head()
 ```
 
 ```{r, message=F, warning=F}
@@ -100,6 +129,10 @@ b0<- skbt %>%
     month = month.abb[month],
     year = as.numeric(year),
     month = as.factor(month)) %>%
+  mutate(month  = forcats::fct_relevel(month, c("Jan", "Feb","Mar","Apr",
+                                                           "May","Jun","Jul","Aug",
+                                                           "Sep","Oct","Nov","Dec")),
+         month_count = c(1:133)) %>% 
   pull(rsv) %>% 
   ts() %>% 
   autoplot(
@@ -107,6 +140,19 @@ b0<- skbt %>%
     main = "SKin Bleaching Trend from 2004 To 2019", 
     xlab = "Months", 
     ylab = "Relative Search Volume") 
+
+b0<- skbt  %>%
+  mutate(month_name  = forcats::fct_relevel(month_name, c("Jan", "Feb","Mar","Apr",
+                                                           "May","Jun","Jul","Aug",
+                                                           "Sep","Oct","Nov","Dec")),
+         month_cont = c(1:133)) %>% 
+  ggplot(aes(x = month_cont, y = rsv, col = year_f))+geom_line()+
+  scale_fill_viridis_d(option = "d", aesthetics = "col", name = "Year Color")+theme(legend.position = "bottom", axis.text.x = element_blank())+
+  labs(
+    title = "SKin Bleaching Trend from 2008 To 2018", 
+    x = "Year", 
+    y = "Relative Search Volume"
+    ) + theme_minimal()
 
 b1<- skbt %>% 
   rename(
@@ -116,7 +162,10 @@ b1<- skbt %>%
     month = as.numeric(month),
     month = month.abb[month],
     year = as.numeric(year),
-    month = as.factor(month)) %>%
+    month = as.factor(month),
+    month = fct_relevel(month, c("Jan","Feb","Mar","Apr", 
+                                 "May","Jun","Jul","Aug",
+                                 "Sep","Oct","Nov", "Dec"))) %>%
   ggplot(aes(x=month, y= rsv#, group = year
              ))+geom_line()+labs(title = "no group")
 
@@ -128,7 +177,10 @@ b2<-skbt %>%
     month = as.numeric(month),
     month = month.abb[month],
     year = as.numeric(year),
-    month = as.factor(month)) %>%
+    month = as.factor(month),
+    month = fct_relevel(month, c("Jan","Feb","Mar","Apr", 
+                                 "May","Jun","Jul","Aug",
+                                 "Sep","Oct","Nov", "Dec"))) %>%
   ggplot(aes(x=month, y= rsv, group = year))+geom_line()+labs(title = "Grouped by year")
 
 ggarrange(b0,b2,b1, widths = c(2,1.5))

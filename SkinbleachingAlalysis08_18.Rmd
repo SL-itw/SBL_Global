@@ -20,14 +20,18 @@ knitr::opts_chunk$set( eval = TRUE, warning = FALSE, message = FALSE,
 
 # loaded packages; placed here to be able to load global settings
 #install.packages(c("kableExtra", "patchwork","DescTools","tidyverse","tseries","DataCombine","forecast","plotly","ggpubr","gridExtra","pastecs","RColorBrewer", "xts"))
-
+ #install.packages(c( "tidyverse", "fpp3","GGally", "sugrrants")) 
+ #install.packages("fabletools",repos = "https://tidyverts.org")
+#install.packages("tidyverts")
 
 Packages <- c("tidyverse", "arsenal", "readxl", 
               "patchwork", "GGally", "ghibli",
               "plotly","ggpubr","gridExtra",
-              "pastecs","forecast","DataCombine",
+              "pastecs","DataCombine",
               "tseries","kableExtra","viridis",
-              "RColorBrewer", "xts")
+              "RColorBrewer", "fabletools",
+              "fpp3","tsibble", "formattable", "forecast")
+
 invisible(lapply(Packages, library, character.only = TRUE))
 
 
@@ -48,23 +52,27 @@ This dataset contains information for years 2004 - 2019, however only 2008 onwar
 ```{r Skin Bleaching Temoral Datasets, message=FALSE, warning=FALSE}
 #Here I am loading in the data.
 
-skbt<- read.csv("./data/GtrendData/bleachingTime08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv"))
+skbt<- read.csv("./data/GtrendData/bleachingTime08_18.csv", header = T, sep = ",",stringsAsFactors = F, col.names = c("time","rsv")) %>% 
 
-#deleting first row that contains duplicate row name
-
-skbt<- skbt[-1,] %>% 
-
-#formating rows to correct class and separating time varaiable to year and month 
+#deleting first row that contains duplicate row name by using one of the column names
+filter(time != "Month") %>% 
+  
+#formating columbs to correct class and separating time varaiable to year and month 
  mutate(rsv = as.numeric(rsv)) %>% 
-  rename(
+  
+rename(
     date = time) %>% 
-    separate(date, into = c("year","month"), sep = "\\-" ) %>% 
-  mutate(
+  
+separate(date, into = c("year","month"), sep = "\\-" ) %>% 
+ 
+mutate(
     month = as.numeric(month),
-    month_name = month.abb[month],
+    month_name = month.abb[month] %>% as_factor(),
     year_f = as.factor(year),
-    month_name = as.factor(month_name)) %>%
-  arrange(year)
+    id = c(1:132)) %>%
+arrange(year) %>% 
+  
+select(id, year, year_f,month_name, month, rsv)
 
 ```
 
@@ -74,7 +82,6 @@ Relative search interest is right skewed.  Given that it is already on a relativ
 
 
 skbt %>%
-  
   ggplot(aes(x = rsv))+
   geom_histogram()+
   labs(title = "Distribution of Relative Search Volume between 2008 - 2018")
@@ -84,12 +91,14 @@ skbt %>%
 
 ```{r, eval=FALSE, message=F, warning=F}
 
+#not neccessary. ####################
 skbt %>% 
   pivot_wider(
     names_from = month_name,
     values_from  = rsv
   ) %>%
     as_tibble() 
+###############################
 ```
 We are interested in understanding how the data changes overtime.  Here we see the distribution of RSV by month.  Very clearly we observe that their may be some seasonality where the highest RSV in every year may be in the summer months of June and July. 
 ```{r, message=F, warning=F}
@@ -98,8 +107,8 @@ skbt  %>%
   mutate(month_name  = forcats::fct_relevel(month_name,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")) %>% 
    ggplot(aes(x = month_name, y = rsv))+
    geom_violin()+
-   ggtitle("Distibution of Relative Search Volume By Month for years 2008 - 2018")
-
+   ggtitle("Distibution of Relative Search Volume in 2008 - 2018, by Month")+
+  labs(x = NULL, y = "Relative Search Volume")
 
 
 ```
@@ -110,11 +119,12 @@ The temporal trend is both represented by year and month where the colors on bot
 
 ```{r, message=F, warning=F, fig.dim= c(10,5)}
 
-
+#plot of rsv by year
 
 b0<- skbt  %>%
-  mutate(
-         month_name  = forcats::fct_relevel(month_name, "Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"),
+  mutate(month_name  = forcats::fct_relevel(month_name, c("Jan", "Feb","Mar","Apr",
+                                                           "May","Jun","Jul","Aug",
+                                                           "Sep","Oct","Nov","Dec")),
          month_cont = c(1:132)) %>% 
   ggplot(aes(x = month_cont, y = rsv, col = year_f))+geom_line()+
   scale_fill_viridis_d(option = "d", aesthetics = "col", name = "Year Color")+theme(legend.position = "bottom", axis.text.x = element_blank())+
@@ -123,6 +133,8 @@ b0<- skbt  %>%
     x = "Year", 
     y = "Relative Search Volume"
     ) + theme_minimal()
+
+#plot of rsv by month
 
 b1<- skbt %>% 
   mutate(
@@ -139,7 +151,7 @@ b0 + plot_layout(ncol = 2) +b1
 
 
 
-In trying to get an idea the percent change by month however I am having issues with the code. 
+This plot represents the mean rsv and its standard deviation of each year. 
 ```{r, message=F, warning=F}
 
 
@@ -147,37 +159,68 @@ skbt %>%
   group_by(year) %>% 
   summarize(
     mean_rsv = mean(rsv, na.rm = T),
-    sd_rsv = sd(rsv),
-    med_rsv = median(rsv, na.rm = T)) %>% 
-  ggplot(aes(x =year, y=mean_rsv))+geom_point()+geom_smooth(formula = y ~ x + x^2, method = "auto", stat = "smooth")
+    sd_rsv = sd(rsv)) %>% 
+  ggplot(aes(x =year, y=mean_rsv))+geom_point()+geom_smooth(formula = y ~ x + x^2, method = "auto", stat = "smooth")+
+  geom_errorbar(aes(ymin=mean_rsv-sd_rsv, ymax=mean_rsv+sd_rsv), width=.2,
+                 position=position_dodge(.9)) 
+
+```
+
+
+This plot is the percent change in rsv from year to year eg: (the percent change between 2008 and 2009 is shown by the dot in 2008, likewise the percent change between 2017 and 2018 is shown in 2017 which is why 2018 does not have a value. 
+```{r}
+skbt %>%  
+  group_by(year) %>% 
+  summarize(
+    mean_rsv = mean(rsv, na.rm = T),
+    sd_rsv = sd(rsv)) %>% 
+  mutate(
+    per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100)  %>% #,
+    #per_change2 = (lead(mean_rsv)-mean_rsv[1])/mean_rsv[1]*100) %>% 
+  ggplot()+
+  geom_point(aes(x = year, y = per_change, colour = "red"))
+```
+
+
+This plot is the percent change in rsv for every year compared to 2008 eg: (the percent change between 2008 and 2009 is shown by the dot in 2008, likewise the percent change between 2008 and 2018 is shown in 2017 which is why 2018 does not have a value. 
+```{r}
   
 skbt %>%  
   group_by(year) %>% 
   summarize(
     mean_rsv = mean(rsv, na.rm = T),
-    sd_rsv = sd(rsv),
-    med_rsv = median(rsv, na.rm = T)) %>% 
+    sd_rsv = sd(rsv)) %>% 
   mutate(
-    per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100,
+    #per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100)  %>% #,
     per_change2 = (lead(mean_rsv)-mean_rsv[1])/mean_rsv[1]*100) %>% 
   ggplot()+
-  geom_point(aes(x = year, y = per_change2, colour = "red"))+
-  geom_point(aes(x = year, y = per_change))
+  geom_point(aes(x = year, y = per_change2, colour = "red"))#+
+#geom_errorbar(aes(ymin=mean_rsv-sd_rsv, ymax=mean_rsv+sd_rsv, x = lead(year)), width=.2,
+             #    position=position_dodge(.9)) 
+#  geom_point(aes(x = year, y = per_change))
   
+
+```
+Given the mean rsv seems to have a large variablilty across years, we decided to look that the median rsv. 
+
+```{r}
 
 skbt %>%  
   group_by(year) %>% 
   summarize(
-    mean_rsv = mean(rsv, na.rm = T),
-    sd_rsv = sd(rsv),
-    med_rsv = median(rsv, na.rm = T)) %>% 
+    med_rsv = median(rsv, na.rm = T),
+    IQR_m = IQR(rsv)) %>% 
   mutate(
-    per_change = (lead(mean_rsv)-mean_rsv)/mean_rsv*100,
-    per_change2 = (lead(mean_rsv)-mean_rsv[1])/mean_rsv[1]*100) %>% 
-  select(per_change, per_change2) %>% 
-  summary()
+    per_change = (lead(med_rsv)-med_rsv)/med_rsv*100,
+    per_change2 = (lead(med_rsv)-med_rsv[1])/med_rsv[1]*100) %>% 
+  #select(per_change, per_change2, m ) %>% 
+  ggplot() +
+  geom_point(aes(x = year, y = med_rsv)) +
+  geom_errorbar(aes(ymin=med_rsv-IQR_m, ymax=med_rsv+IQR_m, x = year), width=.2,
+                 position=position_dodge(.9)) +
+  labs(y = "Median RSV", x = NULL)
+  #summary()
 
-#try using percent change function from email.
 #try to calculate the median of each year then do percent change. 
 #look at timeseries papers to see how to explain the results
 
@@ -195,6 +238,7 @@ Here we observe the decomposed form of the temporal data.  There seems to be an 
 skbt %>% 
   pull(rsv) %>% 
   ts(frequency = 12) %>% 
+    na.omit() %>% 
   stl( s.window = "periodic") %>% 
 plot()
 
@@ -215,23 +259,35 @@ skbt %>%
    broom::tidy() %>% 
    select(method, estimate, p.value) %>% 
    rename("r" = estimate) %>% 
-   knitr::kable()
-
-
+   formattable(align = c("l","c","c"))
 ```
 
------This seasonal plot is still underconstruction----
 
-```{r}
- skbt %>% 
-  pull(rsv) %>% 
-  na.omit() %>% 
-  ts(start = 2008, deltat = 1/12, 
-   #  name = "year"
-     ) %>% 
-      stl( s.window = "periodic") %>% 
-  seasadj() %>% 
-  ggsubseriesplot(main = "Skin Bleaching")
+
+```{r, eval=FALSE}
+
+
+skbt %>%  
+  mutate(
+        day = rep("01",132)) %>% 
+  select(date, day, everything()) %>% 
+  unite("date", date:day,sep = "-") %>% 
+        mutate( yearMonth = yearmonth(date)) %>% 
+  select(yearMonth,rsv,  -date) %>% 
+  as_tsibble(index = yearMonth) %>% 
+  gg_season(rsv)
+
+skbt %>%  
+  mutate(
+        day = rep("01",132)) %>% 
+  select(date, day, everything()) %>% 
+  unite("date", date:day,sep = "-") %>% 
+        mutate( yearMonth = yearmonth(date)) %>% 
+  select(yearMonth,rsv,  -date) %>% 
+  as_tsibble(index = yearMonth) %>% 
+  gg_subseries(rsv)
+  
+  
 
 ```
 
@@ -290,7 +346,7 @@ p <- plot_geo(
       z = ~rsv, 
       #text = ~hover, 
       locations = ~code,
-      color = ~rsv, colors = 'Purples'
+      color = ~rsv, colors = 'Blues'
   ) %>%
     colorbar(title = "Volume In Percentage") %>%
     layout(
@@ -300,5 +356,14 @@ p <- plot_geo(
 
 p
 
+```
+
+Table of states in the upperquartile of rsv (>=72%).
+
+```{r}
+skbr %>% 
+  filter(rsv >= 72) %>% 
+  formattable(align = c("l", "c"))
+  
 ```
 
