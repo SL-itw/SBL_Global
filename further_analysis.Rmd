@@ -302,7 +302,7 @@ test_s <-  states %>%
              ) +
   geom_label_repel(
       aes(label = state ),
-        data =  . %>% filter(trend_strength > 0.5 & seasonal_strength_year > 0.5),
+        data =  . %>% filter(trend_strength > 0.5 & seasonal_strength_year > 0.28),
                   box.padding   = 0.35, 
                   point.padding = 0.5,
                   segment.color = 'grey50',
@@ -343,11 +343,14 @@ The plot with the states that have a his SB RSV when utilizing the regional data
 
 States surrounding FL, GA, MI, NY, CA; though they may not be among those who have high RSV they are interesting still becuase the show similar levels of trend and seasonal strength.  This means that they have increased the most.....  
 
-```{r}
-library(rgdal)
+```{r, message=F, warning=F,include=F}
+library(leaflet)
 library(tigris)
 
 s <-tigris::states()
+```
+
+```{r}
 ss <- states_q %>% 
   mutate(region = as_factor(region)) %>%
   features(hits, feat_stl) %>% 
@@ -436,10 +439,10 @@ legend
 
 #legend plots 
 
-legend = legend_tirtile(state_m$trend_strength, state_m$seasonal_strength_year) +
-  labs(x = "Seasonal Strength →")  
+#legend = legend_tirtile(state_m$trend_strength, state_m$seasonal_strength_year) +
+  #labs(x = "Seasonal Strength →")  
 
-ggsave("/Users/stevenlawrence/Desktop/cumc_github/sl4269.github.io/SBL_Global_TS.svg",  plot = legend,  width = 8, height = 6, bg = "transparent")
+#ggsave("/Users/stevenlawrence/Desktop/cumc_github/sl4269.github.io/SBL_Global_TS.svg",  plot = legend,  width = 8, height = 6, bg = "transparent")
 
 pal_bivariate <- colorNumeric(c("#F1F1F1", "#C3DEEE", "#A1D3EA",
                           "#F7DBE7", "#CAC8E3", "#A6BDDF",
@@ -512,11 +515,18 @@ state_m %>%
           opacity = 1,
           highlightOptions = highlightOptions(weight = 2)) %>% 
         
-        addResetMapButton() %>% 
+   #     addResetMapButton() %>% 
         
-        addFullscreenControl() %>% 
+   #     addFullscreenControl() %>% 
         
-        suspendScroll(sleepNote = F, sleepOpacity = 1) 
+   #     suspendScroll(sleepNote = F, sleepOpacity = 1) %>% 
+        
+        addControl(
+            
+          html = "<img src = 'https://sl4269.github.io/SBL_Global_TS.svg' width = '200' height = '200'>",
+          position = "bottomright",
+          className = "legend-bivar"
+        )
 
 ```
 
