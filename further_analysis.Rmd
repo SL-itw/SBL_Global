@@ -498,7 +498,7 @@ state_m %>%
   leaflet(
   width = "100%",
           options = leafletOptions(zoomControl = FALSE)) %>% 
-  addProviderTiles("CartoDB") %>% 
+  addProviderTiles("Stadia.AlidadeSmooth") %>% 
   addPolygons(fillColor = state_m$trend_strength %>% 
                 bivariate_data(state_m$seasonal_strength_year) %>% pal_bivariate(),
               fillOpacity = 1,
