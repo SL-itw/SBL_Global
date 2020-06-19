@@ -1,5 +1,5 @@
 ---
-title: "Further_analysis"
+title: "Time Series Analysis of Skin Bleaching GTrends in the US"
 author: "Steven Lawrence"
 date: "4/1/2020"
 output: 
@@ -21,7 +21,7 @@ knitr::opts_chunk$set( eval = TRUE, warning = FALSE, message = FALSE,
                      fig.pos = "!h"
                       )
 
-asdl;fkja;
+
 
 Packages <- c("tidyverse", "arsenal", "readxl", 
               "patchwork", "GGally", "ghibli",
@@ -36,17 +36,20 @@ invisible(lapply(Packages, library, character.only = TRUE))
 
 
 # theme global setting for ggplot
-#theme_set(theme_minimal() + 
-#            theme(legend.position = "bottom") +
- #           theme(plot.title = element_text(hjust = 0.5, size = 12),
-  #                plot.subtitle = element_text(hjust = 0.5, size = 8))
- #         )
+theme_set(theme_minimal() + 
+           theme(legend.position = "bottom") +
+           theme(plot.title = element_text(hjust = 0.5, size = 12),
+                 plot.subtitle = element_text(hjust = 0.5, size = 8))
+       )
+
 ```
 
 
-# Extracting data using API
+# Data Mangagement
 
-## Overall 
+Skin bleaching interest was extracted from [Google Trends](trends.google.com) as relative search volume (RSV) using the gTrends package.  The time period of interest is the beggining of 2008 to the end 2018.  Although data is available from 2004 multiple papers suggest that the data is unreliable before 2008. 
+
+# Analysis 
 
 ```{r}
 
@@ -139,7 +142,7 @@ write.csv(states, "statesTS.csv")
 
 ```
 
-```{r}
+```{r, warning=F}
 
 #Extracting state wide information
 
@@ -495,18 +498,21 @@ labels <-
                 state_m$seasonal_strength_year) %>%
             lapply(htmltools::HTML)
 
+#devtools::install_github("rstudio/leaflet")
+leaflet() %>%
+  addProviderTiles("providers$CartoDB.Positron") %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+
 state_m %>% 
-  leaflet(
-  width = "100%",
-          options = leafletOptions(zoomControl = FALSE)) %>% 
-  addProviderTiles("Stadia.AlidadeSmooth") %>% 
-  addPolygons(fillColor = state_m$trend_strength %>% 
+leaflet::leaflet() %>% 
+  leaflet::addProviderTiles(providers$CartoDB.Positron) %>% 
+  leaflet::addPolygons(fillColor = state_m$trend_strength %>% 
                 bivariate_data(state_m$seasonal_strength_year) %>% pal_bivariate(),
               fillOpacity = 1,
               stroke = FALSE,
               smoothFactor = 0) %>% 
         
-        addPolygons(
+        leaflet::addPolygons(
           label = lapply(labels, htmltools::HTML),
           labelOptions = labelOptions(textsize = "12px"),
           fillColor = NA,
@@ -516,13 +522,13 @@ state_m %>%
           opacity = 1,
           highlightOptions = highlightOptions(weight = 2)) %>% 
         
-   #     addResetMapButton() %>% 
+     #   addResetMapButton() %>% 
         
-   #     addFullscreenControl() %>% 
+      # addFullscreenControl() %>% 
         
-   #     suspendScroll(sleepNote = F, sleepOpacity = 1) %>% 
+      #  suspendScroll(sleepNote = F, sleepOpacity = 1) %>% 
         
-        addControl(
+        leaflet::addControl(
             
           html = "<img src = 'https://sl4269.github.io/SBL_Global_TS.svg' width = '200' height = '200'>",
           position = "bottomright",
